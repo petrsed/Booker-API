@@ -12,11 +12,11 @@ def get_password_hash(login):
     return user.hashed_password
 
 
-def get_user_info(login):
+def get_user_info(user_id):
     session = create_session()
     cursor = users.User  # Shortening the path to user
-    user = session.query(cursor).filter(cursor.login == login).first()
-    return user.id, user.name, user.surname, user.type_id, user.cart
+    user = session.query(cursor).filter(cursor.id == user_id).first()
+    return user.id, user.login, user.name, user.surname, user.type_id, user.cart
 
 
 def get_user_type(type_id):
@@ -173,3 +173,33 @@ def give_book(user_id, book_id):
     session.add(issue)
     session.commit()
     return [0, issue.id]  # SUCCESS
+
+
+def return_book(issue_id):
+    session = create_session()
+    cursor = issues.Issues  # Shortening the path to issue
+    issue = session.query(cursor).filter(cursor.id == issue_id).update({'type': 1})  # RETURNED
+    session.commit()
+    return 0  # SUCCESS
+
+
+def check_issue_presence(issue_id):
+    session = create_session()
+    cursor = issues.Issues  # Shortening the path to issue
+    issue = session.query(cursor).filter(cursor.id == issue_id).first()
+    return issue is not None
+
+
+def get_user_cart(user_id):
+    session = create_session()
+    cursor = users.User  # Shortening the path to user
+    user = session.query(cursor).filter(cursor.id == user_id).first()
+    return user.cart
+
+
+def set_user_cart(user_id, user_cart):
+    session = create_session()
+    cursor = users.User  # Shortening the path to issue
+    user = session.query(cursor).filter(cursor.id == user_id).update({'cart': user_cart})
+    session.commit()
+    return 0  # SUCCESS

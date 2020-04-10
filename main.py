@@ -29,8 +29,10 @@ def login():
     if authentication_status != 0:
         return json.dumps(response)
     user_login = request.json["user"]["login"]
-    user_id, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_login)
+    user_id = dbwrapper.get_user_id(user_login)
+    user_id, user_login, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_id)
     response["user"] = {"id": user_id,
+                        "login": user_login,
                         "name": user_name,
                         "surname": user_surname,
                         "type": user_type,
@@ -110,7 +112,7 @@ def add_book():
     return json.dumps(response)
 
 
-@app.route('/issue', methods=['PUT'])
+@app.route('/issue/', methods=['POST'])
 def issue():
     issued_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                        2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
@@ -122,6 +124,40 @@ def issue():
     if issue_status != 0:
         return json.dumps(response)
     response["issue_id"] = issue_id
+    return json.dumps(response)
+
+
+@app.route('/issue/return/<issue_id>', methods=['POST'])
+def return_book(issue_id):
+    return_statuses = {0: "SUCCESS", 1: "UNKNOWN_ISSUE_ID"}
+    response = dict()
+    return_status = handler.return_book(issue_id)
+    response["return_status"] = return_statuses[return_status]
+    return json.dumps(response)
+
+
+@app.route('/cart', methods=['POST'])
+def add_boot_to_cart():
+    add_to_cart_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
+                            2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
+                            4: "MISSING_BOOK_ID"}
+    response = dict()
+    logging.info(f'Request: {request.json!r}')
+    add_to_cart_status = handler.add_to_cart(request.json)
+    response["add_status"] = add_to_cart_statuses[add_to_cart_status]
+    return json.dumps(response)
+
+
+@app.route('/user/<user_id>', methods=['GET'])
+def get_user_data(user_id):
+    response = dict()
+    user_id, user_login, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_id)
+    response["user"] = {"id": user_id,
+                        "login": user_login,
+                        "name": user_name,
+                        "surname": user_surname,
+                        "type": user_type,
+                        "cart": user_cart}
     return json.dumps(response)
 
 

@@ -24,10 +24,10 @@ def authenticate(request):
     return entry(login, password_hash)
 
 
-def get_user_data(login):
-    user_id, user_name, user_surname, user_type_id, user_cart = dbwrapper.get_user_info(login)
+def get_user_data(user_id):
+    user_id, user_login, user_name, user_surname, user_type_id, user_cart = dbwrapper.get_user_info(user_id)
     user_type = dbwrapper.get_user_type(user_type_id)
-    return user_id, user_name, user_surname, user_type, user_cart
+    return user_id, user_login, user_name, user_surname, user_type, user_cart
 
 
 def registration(request):
@@ -141,3 +141,31 @@ def issue_book(request):
     if not dbwrapper.check_user_presence(user_id):
         return [2, None]  # UNKNOWN_BOOK_ID
     return dbwrapper.give_book(user_id, book_id)
+
+
+def return_book(issue_id):
+    if not dbwrapper.check_issue_presence(issue_id):
+        return 1  # UNKNOWN_ISSUE_ID
+    return dbwrapper.return_book(issue_id)
+
+
+def add_to_cart(request):
+    if "user_id" not in request:
+        return 3  # MISSING_USER_ID
+    elif "book_id" not in request:
+        return 4  # MISSING_BOOK_ID
+    book_id, user_id = request["book_id"], request["user_id"]
+    if not dbwrapper.check_book_presence(book_id):
+        return 2  # UNKNOWN_BOOK_ID
+    if not dbwrapper.check_user_presence(user_id):
+        return 1  # UNKNOWN_USER_ID
+    user_cart = dbwrapper.get_user_cart(user_id)
+    if user_cart is not None:
+        books = user_cart.split(";")
+        books.append(str(book_id))
+        new_user_cart = ";".join(set(books))
+    else:
+        new_user_cart = str(book_id)
+    return dbwrapper.set_user_cart(user_id, new_user_cart)
+
+
