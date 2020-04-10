@@ -99,3 +99,10 @@ def get_book_author_name(author_id):
     cursor = authors.Authors  # Shortening the path to authors
     author = session.query(cursor).filter(cursor.id == author_id).first()
     return author.name
+
+
+def get_book(book_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    book = session.query(cursor).filter(cursor.id == book_id).first()
+    return book

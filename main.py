@@ -80,5 +80,21 @@ def get_books():
     return json.dumps(response)
 
 
+@app.route('/book/<id>', methods=['GET'])
+def get_book(id):
+    response = dict()
+    book = handler.get_book(id)
+    if book == 1:
+        response["error"] = "UNKNOWN_BOOK_ID"
+        return json.dumps(response)
+    response["book"] = {"id": book[0],
+                        "genre": book[1],
+                        "name": book[2],
+                        "author": book[3],
+                        "barcode": book[4],
+                        "quantity": book[5]}
+    return json.dumps(response)
+
+
 if __name__ == '__main__':
     main()

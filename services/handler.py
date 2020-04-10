@@ -83,8 +83,18 @@ def get_books(request):
     books = list()
     books_objects = dbwrapper.get_books(genre_id)
     for book_object in books_objects:
-        book_genre = dbwrapper.get_book_genre_name(book_object.id)
+        book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
         book_author = dbwrapper.get_book_author_name(book_object.author_id)
         books.append(
             [book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity])
     return books
+
+
+def get_book(id):
+    book_object = dbwrapper.get_book(id)
+    if book_object is None:
+        return 1  # UNKNOWN_BOOK_ID
+    else:
+        book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
+        book_author = dbwrapper.get_book_author_name(book_object.author_id)
+        return [book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity]
