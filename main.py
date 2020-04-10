@@ -148,7 +148,7 @@ def add_boot_to_cart():
     return json.dumps(response)
 
 
-@app.route('/user/<user_id>', methods=['GET', "DEL"])
+@app.route('/user/<user_id>', methods=['GET'])
 def get_user_data(user_id):
     response = dict()
     user_id, user_login, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_id)
@@ -181,6 +181,21 @@ def cart():
         add_to_cart_status = handler.delete_from_cart(request.json)
         response["delete_status"] = add_to_cart_statuses[add_to_cart_status]
         return json.dumps(response)
+
+
+@app.route('/issues', methods=['GET'])
+def get_issues():
+    error_codes = {1: "UNKNOWN_USER_ID", 2: "MISSING_USER_ID", 3: "UNKNOWN_ISSUE_STATUS"}
+    response = dict()
+    logging.info(f'Request: {request.json!r}')
+    issues = handler.get_issues(request.json)
+    try:
+        response["error"] = error_codes[issues]
+    except TypeError:
+        response["amount"] = len(issues)
+        response["issues"] = [
+            {"id": issue[0], "book_id": issue[1], "date": issue[2], "type": issue[3]} for issue in issues]
+    return json.dumps(response)
 
 
 if __name__ == '__main__':

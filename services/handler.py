@@ -192,3 +192,25 @@ def delete_from_cart(request):
     if not dbwrapper.check_user_presence(user_id):
         return 1  # UNKNOWN_USER_ID
     return remove_from_cart(user_id, book_id)
+
+
+def get_issues(request):
+    if "issue_status" not in request:
+        issue_status = None
+    elif request["issue_status"] == "ISSUED":
+        issue_status = 0
+    elif request["issue_status"] == "RETURNED":
+        issue_status = 1
+    else:
+        return 3  # UNKNOWN_ISSUE_STATUS
+    if "user_id" not in request:
+        return 2  # MISSING_USER_ID
+    user_id = request["user_id"]
+    if not dbwrapper.check_user_presence(user_id):
+        return 1  # UNKNOWN_USER_ID
+    user_issues = dbwrapper.get_issues(user_id, issue_status)
+    issues = list()
+    for issue_obj in user_issues:
+        type = dbwrapper.get_issue_type_name(issue_obj.type)
+        issues.append([issue_obj.id, issue_obj.book_id, str(issue_obj.date), type])
+    return issues

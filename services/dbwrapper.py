@@ -1,5 +1,5 @@
 from data.db_session import create_session
-from models import user_types, book_genres, books, authors, issues, users
+from models import user_types, book_genres, books, authors, issues, users, issue_types
 import datetime
 
 
@@ -199,7 +199,24 @@ def get_user_cart(user_id):
 
 def set_user_cart(user_id, user_cart):
     session = create_session()
-    cursor = users.User  # Shortening the path to issue
+    cursor = users.User  # Shortening the path to user
     user = session.query(cursor).filter(cursor.id == user_id).update({'cart': user_cart})
     session.commit()
     return 0  # SUCCESS
+
+
+def get_issues(user_id, issue_status):
+    session = create_session()
+    cursor = issues.Issues  # Shortening the path to issue
+    if issue_status is None:
+        user_issues = session.query(cursor).filter(cursor.user_id == user_id).all()
+    else:
+        user_issues = session.query(cursor).filter(cursor.user_id == user_id, cursor.type == issue_status).all()
+    return user_issues
+
+
+def get_issue_type_name(issue_id):
+    session = create_session()
+    cursor = issue_types.IssueTypes  # Shortening the path to issue
+    issue = session.query(cursor).filter(cursor.id == issue_id).first()
+    return issue.name
