@@ -173,6 +173,22 @@ def add_to_cart(request):
 def remove_from_cart(user_id, book_id):
     user_cart = dbwrapper.get_user_cart(user_id)
     books = user_cart.split(";")
-    del books[books.index(str(book_id))]
+    try:
+        del books[books.index(str(book_id))]
+    except ValueError:
+        return 5  # BOOK_IS_NOT_IN_CART
     new_user_cart = ";".join(set(books))
     return dbwrapper.set_user_cart(user_id, new_user_cart)
+
+
+def delete_from_cart(request):
+    if "user_id" not in request:
+        return 3  # MISSING_USER_ID
+    elif "book_id" not in request:
+        return 4  # MISSING_BOOK_ID
+    book_id, user_id = request["book_id"], request["user_id"]
+    if not dbwrapper.check_book_presence(book_id):
+        return 2  # UNKNOWN_BOOK_ID
+    if not dbwrapper.check_user_presence(user_id):
+        return 1  # UNKNOWN_USER_ID
+    return remove_from_cart(user_id, book_id)
