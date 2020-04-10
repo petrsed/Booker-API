@@ -140,6 +140,7 @@ def issue_book(request):
         return [1, None]  # UNKNOWN_USER_ID
     if not dbwrapper.check_user_presence(user_id):
         return [2, None]  # UNKNOWN_BOOK_ID
+    remove_from_cart(user_id, book_id)
     return dbwrapper.give_book(user_id, book_id)
 
 
@@ -169,3 +170,9 @@ def add_to_cart(request):
     return dbwrapper.set_user_cart(user_id, new_user_cart)
 
 
+def remove_from_cart(user_id, book_id):
+    user_cart = dbwrapper.get_user_cart(user_id)
+    books = user_cart.split(";")
+    del books[books.index(str(book_id))]
+    new_user_cart = ";".join(set(books))
+    return dbwrapper.set_user_cart(user_id, new_user_cart)
