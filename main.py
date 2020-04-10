@@ -197,6 +197,3 @@ def get_issues():
             {"id": issue[0], "book_id": issue[1], "date": issue[2], "type": issue[3]} for issue in issues]
     return json.dumps(response)
 
-
-if __name__ == '__main__':
-    main()
