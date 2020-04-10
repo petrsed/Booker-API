@@ -106,3 +106,45 @@ def get_book(book_id):
     cursor = books.Books  # Shortening the path to book
     book = session.query(cursor).filter(cursor.id == book_id).first()
     return book
+
+
+def check_barcode_replay(barcode):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    user = session.query(cursor).filter(cursor.barcode == barcode).first()
+    return user is None
+
+
+def get_book_author_id(author_name):
+    session = create_session()
+    cursor = authors.Authors  # Shortening the path to authors
+    author = session.query(cursor).filter(cursor.name == author_name).first()
+    return author
+
+
+def add_author(name):
+    session = create_session()
+    author = authors.Authors()
+    author.name = name
+    session.add(author)
+    session.commit()
+    return 0  # SUCCESS
+
+
+def add_book(name, author_id, barcode, quantity):
+    session = create_session()
+    book = books.Books()
+    book.name = name
+    book.author_id = author_id
+    book.barcode = barcode
+    book.quantity = quantity
+    session.add(book)
+    session.commit()
+    return 0  # SUCCESS
+
+
+def get_book_id(book_barcode):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    book = session.query(cursor).filter(cursor.barcode == book_barcode).first()
+    return book.id

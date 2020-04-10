@@ -66,7 +66,7 @@ def get_genres():
     return json.dumps(response)
 
 
-@app.route('/book', methods=['GET'])
+@app.route('/books', methods=['GET'])
 def get_books():
     response = dict()
     books = handler.get_books(request.json)
@@ -93,6 +93,24 @@ def get_book(id):
                         "author": book[3],
                         "barcode": book[4],
                         "quantity": book[5]}
+    return json.dumps(response)
+
+
+@app.route('/book', methods=['POST'])
+def add_book():
+    statuses_of_the_add = {0: "SUCCESS", 1: "INVALID_BARCODE",
+                           2: "BARCODE_REPLAY", 3: "MISSING_NAME",
+                           4: "MISSING_AUTHOR", 5: "MISSING_BARCODE",
+                           6: "MISSING_QUANTITY", 7: "MISSING_ARGUMENTS"}
+    response = dict()
+    logging.info(f'Request: {request.json!r}')
+    add_book_status = handler.add_book(request.json)
+    response["add_status"] = statuses_of_the_add[add_book_status]
+    if add_book_status != 0:
+        return json.dumps(response)
+    book_barcode = request.json["book"]["barcode"]
+    book_id = dbwrapper.get_book_id(book_barcode)
+    response["book"] = {"id": book_id}
     return json.dumps(response)
 
 

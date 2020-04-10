@@ -98,3 +98,36 @@ def get_book(id):
         book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
         book_author = dbwrapper.get_book_author_name(book_object.author_id)
         return [book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity]
+
+
+def add_book(request):
+    if "book" not in request:
+        return 7  # MISSING_ARGUMENTS
+    book = request["book"]
+    if "name" not in book:
+        return 3  # MISSING_NAME
+    elif "author" not in book:
+        return 4  # MISSING_AUTHOR
+    elif "barcode" not in book:
+        return 5  # MISSING_BARCODE
+    elif "quantity" not in book:
+        return 6  # MISSING_QUANTITY
+    name, author = book["name"], book["author"]
+    barcode, quantity = book["barcode"], book["quantity"]
+    if not dbwrapper.check_barcode_replay(barcode):
+        return 2  # BARCODE_REPLAY
+    if not check_barcode_valid(barcode):
+        return 1  # INVALID_BARCODE
+    author_obj = dbwrapper.get_book_author_id(author)
+    if author_obj is None:
+        dbwrapper.add_author(author)
+        author_obj = dbwrapper.get_book_author_id(author)
+    author_id = author_obj.id
+    return dbwrapper.add_book(name, author_id, barcode, quantity)
+
+
+def check_barcode_valid(barcode):
+    return barcode.isdigit()
+
+
+
