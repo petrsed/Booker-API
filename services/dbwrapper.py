@@ -16,7 +16,7 @@ def get_user_info(login):
     session = create_session()
     cursor = users.User  # Shortening the path to user
     user = session.query(cursor).filter(cursor.login == login).first()
-    return user.id, user.type_id, user.cart
+    return user.id, user.name, user.surname, user.type_id, user.cart
 
 
 def get_user_type(type_id):

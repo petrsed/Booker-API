@@ -24,6 +24,6 @@ def authenticate(request):
 
 
 def get_user_data(login):
-    user_id, user_type_id, user_cart = dbwrapper.get_user_info(login)
+    user_id, user_name, user_surname, user_type_id, user_cart = dbwrapper.get_user_info(login)
     user_type = dbwrapper.get_user_type(user_type_id)
-    return user_id, user_type, user_cart
+    return user_id, user_name, user_surname, user_type, user_cart

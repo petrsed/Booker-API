@@ -29,8 +29,10 @@ def login():
     if authentication_status != 0:
         return json.dumps(response)
     user_login = request.json["user"]["login"]
-    user_id, user_type, user_cart = handler.get_user_data(user_login)
+    user_id, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_login)
     response["user"] = {"id": user_id,
+                        "name": user_name,
+                        "surname": user_surname,
                         "type": user_type,
                         "cart": user_cart}
     return json.dumps(response)
