@@ -70,6 +70,9 @@ def get_genres():
 def get_books():
     response = dict()
     books = handler.get_books(request.json)
+    if books == 1:
+        response["error"] = "UNKNOWN_GENRE"
+        return json.dumps(response)
     response["amount"] = len(books)
     response["books"] = [
         {"id": book[0], "genre": book[1], "name": book[2], "author": book[3], "barcode": book[4], "quantity": book[5]}
