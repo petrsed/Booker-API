@@ -47,12 +47,10 @@ def registration():
                              8: "MISSING_ARGUMENTS", 9: "MISSING_TYPE", 10: "INVALID_TYPE"}
     response = dict()
     logging.info(f'Request: {request.json!r}')
-    registration_status = handler.registration(request.json)
+    registration_status, user_id = handler.registration(request.json)
     response["authentication_status"] = registration_statuses[registration_status]
     if registration_status != 0:
         return json.dumps(response)
-    user_login = request.json["user"]["login"]
-    user_id = dbwrapper.get_user_id(user_login)
     response["user"] = {"id": user_id}
     return json.dumps(response)
 
@@ -104,13 +102,26 @@ def add_book():
                            6: "MISSING_QUANTITY", 7: "MISSING_ARGUMENTS"}
     response = dict()
     logging.info(f'Request: {request.json!r}')
-    add_book_status = handler.add_book(request.json)
+    add_book_status, book_id = handler.add_book(request.json)
     response["add_status"] = statuses_of_the_add[add_book_status]
     if add_book_status != 0:
         return json.dumps(response)
-    book_barcode = request.json["book"]["barcode"]
-    book_id = dbwrapper.get_book_id(book_barcode)
     response["book"] = {"id": book_id}
+    return json.dumps(response)
+
+
+@app.route('/issue', methods=['PUT'])
+def issue():
+    issued_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
+                       2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
+                       4: "MISSING_BOOK_ID"}
+    response = dict()
+    logging.info(f'Request: {request.json!r}')
+    issue_status, issue_id = handler.issue_book(request.json)
+    response["issue_status"] = issued_statuses[issue_status]
+    if issue_status != 0:
+        return json.dumps(response)
+    response["issue_id"] = issue_id
     return json.dumps(response)
 
 

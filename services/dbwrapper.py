@@ -1,6 +1,6 @@
 from data.db_session import create_session
-from models import users
-from models import user_types, book_genres, books, authors
+from models import user_types, book_genres, books, authors, issues, users
+import datetime
 
 
 def get_password_hash(login):
@@ -46,7 +46,7 @@ def add_user(login, password_hash, name, surname, email, type_id):
     user.type_id = type_id
     session.add(user)
     session.commit()
-    return 0  # SUCCESS
+    return [0, user.id]  # SUCCESS
 
 
 def get_user_id(login):
@@ -140,7 +140,7 @@ def add_book(name, author_id, barcode, quantity):
     book.quantity = quantity
     session.add(book)
     session.commit()
-    return 0  # SUCCESS
+    return [0, book.id]  # SUCCESS
 
 
 def get_book_id(book_barcode):
@@ -148,3 +148,28 @@ def get_book_id(book_barcode):
     cursor = books.Books  # Shortening the path to book
     book = session.query(cursor).filter(cursor.barcode == book_barcode).first()
     return book.id
+
+
+def check_book_presence(book_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    book = session.query(cursor).filter(cursor.id == book_id).first()
+    return book is not None
+
+
+def check_user_presence(user_id):
+    session = create_session()
+    cursor = users.User  # Shortening the path to user
+    user = session.query(cursor).filter(cursor.id == user_id).first()
+    return user is not None
+
+
+def give_book(user_id, book_id):
+    session = create_session()
+    issue = issues.Issues()
+    issue.user_id = user_id
+    issue.book_id = book_id
+    issue.type = "0"  # ISSUED
+    session.add(issue)
+    session.commit()
+    return [0, issue.id]  # SUCCESS

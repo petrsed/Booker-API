@@ -32,27 +32,27 @@ def get_user_data(login):
 
 def registration(request):
     if "user" not in request:
-        return 8  # MISSING_ARGUMENTS
+        return [8, None]  # MISSING_ARGUMENTS
     user = request["user"]
     if "login" not in user:
-        return 3  # MISSING_LOGIN
+        return [3, None]  # MISSING_LOGIN
     elif "name" not in user:
-        return 4  # MISSING_NAME
+        return [4, None]  # MISSING_NAME
     elif "surname" not in user:
-        return 5  # MISSING_SURNAME
+        return [5, None]  # MISSING_SURNAME
     elif "email" not in user:
-        return 7  # MISSING_EMAIL
+        return [7, None]  # MISSING_EMAIL
     elif "password_hash" not in user:
-        return 6  # MISSING_PASSWORD_HASH
+        return [6, None]  # MISSING_PASSWORD_HASH
     elif "type" not in user:
-        return 9  # MISSING_TYPE
+        return [9, None]  # MISSING_TYPE
     login, password_hash = user["login"], user["password_hash"]
     name, surname = user["name"], user["surname"]
     email, type = user["email"], user["type"]
     if not dbwrapper.check_login_replay(login):
-        return 2  # LOGIN_REPLAY
+        return [2, None]  # LOGIN_REPLAY
     if not check_email_valid(email):
-        return 1  # INVALID_EMAIL
+        return [1, None]  # INVALID_EMAIL
     type_id = dbwrapper.get_user_type_id(type)
     if type_id == 10:
         return 10  # INVALID_TYPE
@@ -102,22 +102,22 @@ def get_book(id):
 
 def add_book(request):
     if "book" not in request:
-        return 7  # MISSING_ARGUMENTS
+        return [7, None]  # MISSING_ARGUMENTS
     book = request["book"]
     if "name" not in book:
-        return 3  # MISSING_NAME
+        return [3, None]  # MISSING_NAME
     elif "author" not in book:
-        return 4  # MISSING_AUTHOR
+        return [4, None]  # MISSING_AUTHOR
     elif "barcode" not in book:
-        return 5  # MISSING_BARCODE
+        return [5, None]  # MISSING_BARCODE
     elif "quantity" not in book:
-        return 6  # MISSING_QUANTITY
+        return [6, None]  # MISSING_QUANTITY
     name, author = book["name"], book["author"]
     barcode, quantity = book["barcode"], book["quantity"]
     if not dbwrapper.check_barcode_replay(barcode):
-        return 2  # BARCODE_REPLAY
+        return [2, None]  # BARCODE_REPLAY
     if not check_barcode_valid(barcode):
-        return 1  # INVALID_BARCODE
+        return [1, None]  # INVALID_BARCODE
     author_obj = dbwrapper.get_book_author_id(author)
     if author_obj is None:
         dbwrapper.add_author(author)
@@ -130,4 +130,14 @@ def check_barcode_valid(barcode):
     return barcode.isdigit()
 
 
-
+def issue_book(request):
+    if "user_id" not in request:
+        return [3, None]  # MISSING_USER_ID
+    elif "book_id" not in request:
+        return [4, None]  # MISSING_BOOK_ID
+    book_id, user_id = request["book_id"], request["user_id"]
+    if not dbwrapper.check_book_presence(book_id):
+        return [1, None]  # UNKNOWN_USER_ID
+    if not dbwrapper.check_user_presence(user_id):
+        return [2, None]  # UNKNOWN_BOOK_ID
+    return dbwrapper.give_book(user_id, book_id)
