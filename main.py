@@ -66,6 +66,15 @@ def get_genres():
     return json.dumps(response)
 
 
+@app.route('/book', methods=['GET'])
+def get_books():
+    response = dict()
+    books = handler.get_books(request.json)
+    response["amount"] = len(books)
+    response["books"] = [
+        {"id": book[0], "genre": book[1], "name": book[2], "author": book[3], "barcode": book[4], "quantity": book[5]}
+        for book in books]
+    return json.dumps(response)
 
 
 if __name__ == '__main__':

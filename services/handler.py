@@ -70,3 +70,21 @@ def get_books_genres():
     for genre_object in genre_objects:
         genres.append([genre_object.id, genre_object.name])
     return genres
+
+
+def get_books(request):
+    if "genre" not in request:
+        genre_id = None
+    else:
+        genre_name = request["genre"]
+        genre_id = dbwrapper.get_book_genre_id(genre_name)
+        if genre_id == 'UNKNOWN_GENRE':
+            return 1  # UNKNOWN_GENRE
+    books = list()
+    books_objects = dbwrapper.get_books(genre_id)
+    for book_object in books_objects:
+        book_genre = dbwrapper.get_book_genre_name(book_object.id)
+        book_author = dbwrapper.get_book_author_name(book_object.author_id)
+        books.append(
+            [book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity])
+    return books

@@ -1,6 +1,6 @@
 from data.db_session import create_session
 from models import users
-from models import user_types, book_genres
+from models import user_types, book_genres, books, authors
 
 
 def get_password_hash(login):
@@ -67,3 +67,35 @@ def get_books_genres():
     session = create_session()
     genres = session.query(book_genres.BookGenre).all()
     return genres
+
+
+def get_books(genre_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    if genre_id is None:
+        return session.query(cursor).all()
+    else:
+        return session.query(cursor).filter(cursor.genre_id == genre_id).all()
+
+
+def get_book_genre_id(genre_name):
+    session = create_session()
+    cursor = book_genres.BookGenre  # Shortening the path to book genre
+    genre = session.query(cursor).filter(cursor.name == genre_name).first()
+    if genre is None:
+        return 'UNKNOWN_GENRE'
+    return genre.id
+
+
+def get_book_genre_name(genre_id):
+    session = create_session()
+    cursor = book_genres.BookGenre  # Shortening the path to book genre
+    genre = session.query(cursor).filter(cursor.id == genre_id).first()
+    return genre.name
+
+
+def get_book_author_name(author_id):
+    session = create_session()
+    cursor = authors.Authors  # Shortening the path to authors
+    author = session.query(cursor).filter(cursor.id == author_id).first()
+    return author.name
