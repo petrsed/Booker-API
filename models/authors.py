@@ -1,7 +1,6 @@
 import sqlalchemy
 from data.db_session import SqlAlchemyBase
 
-
 class Authors(SqlAlchemyBase):
     __tablename__ = 'authors'
 
