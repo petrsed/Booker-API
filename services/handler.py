@@ -62,3 +62,11 @@ def registration(request):
 def check_email_valid(address):
     pattern = compile('(^|\s)[-a-z0-9_.]+@([-a-z0-9]+\.)+[a-z]{2,6}(\s|$)')
     return pattern.match(address)
+
+
+def get_books_genres():
+    genres = list()
+    genre_objects = dbwrapper.get_books_genres()
+    for genre_object in genre_objects:
+        genres.append([genre_object.id, genre_object.name])
+    return genres

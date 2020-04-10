@@ -57,5 +57,16 @@ def registration():
     return json.dumps(response)
 
 
+@app.route('/book/genres', methods=['GET'])
+def get_genres():
+    response = dict()
+    genres = handler.get_books_genres()
+    response["amount"] = len(genres)
+    response["genres"] = [{"id": genre[0], "name": genre[1]} for genre in genres]
+    return json.dumps(response)
+
+
+
+
 if __name__ == '__main__':
     main()

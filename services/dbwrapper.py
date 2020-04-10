@@ -1,6 +1,6 @@
 from data.db_session import create_session
 from models import users
-from models import user_types
+from models import user_types, book_genres
 
 
 def get_password_hash(login):
@@ -61,3 +61,9 @@ def check_login_replay(login):
     cursor = users.User  # Shortening the path to user
     user = session.query(cursor).filter(cursor.login == login).first()
     return user is None
+
+
+def get_books_genres():
+    session = create_session()
+    genres = session.query(book_genres.BookGenre).all()
+    return genres
