@@ -6,8 +6,8 @@ class Books(SqlAlchemyBase):
     __tablename__ = 'books'
 
     id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, autoincrement=True, index=True)
-    genre_id = sqlalchemy.Column(sqlalchemy.Integer, index=True)
+    genre_id = sqlalchemy.Column(sqlalchemy.String, index=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    author_id = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    author_id = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     barcode = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
-    quantity = sqlalchemy.Column(sqlalchemy.Integer, nullable=True)
+    quantity = sqlalchemy.Column(sqlalchemy.String, nullable=True)

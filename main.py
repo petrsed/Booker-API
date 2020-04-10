@@ -38,5 +38,24 @@ def login():
     return json.dumps(response)
 
 
+@app.route('/registration', methods=['PUT'])
+def registration():
+    registration_statuses = {0: "SUCCESS", 1: "INVALID_EMAIL",
+                             2: "LOGIN_REPLAY", 3: "MISSING_LOGIN",
+                             4: "MISSING_NAME", 5: "MISSING_SURNAME",
+                             6: "MISSING_PASSWORD_HASH", 7: "MISSING_EMAIL",
+                             8: "MISSING_ARGUMENTS", 9: "MISSING_TYPE", 10: "INVALID_TYPE"}
+    response = dict()
+    logging.info(f'Request: {request.json!r}')
+    registration_status = handler.registration(request.json)
+    response["authentication_status"] = registration_statuses[registration_status]
+    if registration_status != 0:
+        return json.dumps(response)
+    user_login = request.json["user"]["login"]
+    user_id = dbwrapper.get_user_id(user_login)
+    response["user"] = {"id": user_id}
+    return json.dumps(response)
+
+
 if __name__ == '__main__':
     main()
