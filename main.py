@@ -4,6 +4,7 @@ import sys
 from services import handler, dbwrapper
 from data import db_session
 import json
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'booker_secret_key'
@@ -13,7 +14,8 @@ def main():
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
     logging.info("Program start.")
     db_session.global_init("db/booker.sqlite")
-    app.run()
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
     logging.info("Exit program.")
 
 
