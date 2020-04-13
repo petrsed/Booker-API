@@ -5,3 +5,4 @@ from models import authors
 from models import issues
 from models import issue_types
 from models import book_genres
+from models import images
