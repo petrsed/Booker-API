@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, redirect
 import logging
 import sys
 from services import handler, dbwrapper
@@ -200,6 +200,12 @@ def get_issues():
         response["issues"] = [
             {"id": issue[0], "book_id": issue[1], "date": issue[2], "type": issue[3]} for issue in issues]
     return json.dumps(response)
+
+
+@app.route('/index')
+@app.route('/')
+def redirect_to_documentation():
+    return redirect("https://www.notion.so/Booker-API-96e582c8325b40948997babe674acac1")
 
 
 if __name__ == '__main__':
