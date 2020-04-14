@@ -1,5 +1,6 @@
 from . import dbwrapper
 from re import *
+from random import sample
 
 
 def entry(login, received_password_hash):
@@ -73,10 +74,12 @@ def get_books_genres():
 
 
 def get_books(request):
-    if "genre" not in request:
+    args = request.args
+    random = args.get("random")
+    genre_name = args.get("genre")
+    if genre_name is None:
         genre_id = None
     else:
-        genre_name = request["genre"]
         genre_id = dbwrapper.get_book_genre_id(genre_name)
         if genre_id == 'UNKNOWN_GENRE':
             return 1  # UNKNOWN_GENRE
@@ -86,8 +89,11 @@ def get_books(request):
         book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
         book_author = dbwrapper.get_book_author_name(book_object.author_id)
         books.append(
-            [book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity])
-    return books
+            (book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity))
+    if random is None or len(books) <= int(random):
+        return books
+    else:
+        return sample(books, len(books))[:int(random)]
 
 
 def get_book(id):
@@ -182,11 +188,12 @@ def remove_from_cart(user_id, book_id):
 
 
 def delete_from_cart(request):
-    if "user_id" not in request:
+    user_id = request.get("user_id")
+    book_id = request.get("book_id")
+    if user_id is None:
         return 3  # MISSING_USER_ID
-    elif "book_id" not in request:
+    elif book_id is None:
         return 4  # MISSING_BOOK_ID
-    book_id, user_id = request["book_id"], request["user_id"]
     if not dbwrapper.check_book_presence(book_id):
         return 2  # UNKNOWN_BOOK_ID
     if not dbwrapper.check_user_presence(user_id):
@@ -195,20 +202,21 @@ def delete_from_cart(request):
 
 
 def get_issues(request):
-    if "issue_status" not in request:
-        issue_status = None
-    elif request["issue_status"] == "ISSUED":
-        issue_status = 0
-    elif request["issue_status"] == "RETURNED":
-        issue_status = 1
+    issue_status = request.args.get("issue_status")
+    user_id = request.args.get("user_id")
+    if issue_status is not None:
+        issue_status_obj = dbwrapper.get_issue_status_is(issue_status)
+        if issue_status_obj is None:
+            return 3  # UNKNOWN_ISSUE_STATUS
+        else:
+            issue_status_id = issue_status_obj.id
     else:
-        return 3  # UNKNOWN_ISSUE_STATUS
-    if "user_id" not in request:
+        issue_status_id = issue_status  # set none
+    if user_id is None:
         return 2  # MISSING_USER_ID
-    user_id = request["user_id"]
     if not dbwrapper.check_user_presence(user_id):
         return 1  # UNKNOWN_USER_ID
-    user_issues = dbwrapper.get_issues(user_id, issue_status)
+    user_issues = dbwrapper.get_issues(user_id, issue_status_id)
     issues = list()
     for issue_obj in user_issues:
         type = dbwrapper.get_issue_type_name(issue_obj.type)

@@ -42,7 +42,7 @@ def login():
     return json.dumps(response)
 
 
-@app.route('/registration', methods=['PUT'])
+@app.route('/registration', methods=['POST'])
 def registration():
     registration_statuses = {0: "SUCCESS", 1: "INVALID_EMAIL",
                              2: "LOGIN_REPLAY", 3: "MISSING_LOGIN",
@@ -71,7 +71,7 @@ def get_genres():
 @app.route('/books', methods=['GET'])
 def get_books():
     response = dict()
-    books = handler.get_books(request.json)
+    books = handler.get_books(request)
     if books == 1:
         response["error"] = "UNKNOWN_GENRE"
         return json.dumps(response)
@@ -179,8 +179,7 @@ def cart():
                                 2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                                 4: "MISSING_BOOK_ID", 5: "BOOK_IS_NOT_IN_CART"}
         response = dict()
-        logging.info(f'Request: {request.json!r}')
-        add_to_cart_status = handler.delete_from_cart(request.json)
+        add_to_cart_status = handler.delete_from_cart(request.args)
         response["delete_status"] = add_to_cart_statuses[add_to_cart_status]
         return json.dumps(response)
 
@@ -189,8 +188,7 @@ def cart():
 def get_issues():
     error_codes = {1: "UNKNOWN_USER_ID", 2: "MISSING_USER_ID", 3: "UNKNOWN_ISSUE_STATUS"}
     response = dict()
-    logging.info(f'Request: {request.json!r}')
-    issues = handler.get_issues(request.json)
+    issues = handler.get_issues(request)
     try:
         response["error"] = error_codes[issues]
     except TypeError:

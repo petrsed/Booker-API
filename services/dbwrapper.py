@@ -220,3 +220,10 @@ def get_issue_type_name(issue_id):
     cursor = issue_types.IssueTypes  # Shortening the path to issue
     issue = session.query(cursor).filter(cursor.id == issue_id).first()
     return issue.name
+
+
+def get_issue_status_is(issue_status):
+    session = create_session()
+    cursor = issue_types.IssueTypes  # Shortening the path to issue
+    issue = session.query(cursor).filter(cursor.name == issue_status).first()
+    return issue
