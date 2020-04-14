@@ -163,15 +163,15 @@ def get_user_data(user_id):
     return json.dumps(response)
 
 
-@app.route('/cart', methods=["POST", 'DELETE'])
+@app.route('/cart', methods=["PUT", 'DELETE'])
 def cart():
-    if request.method == "POST":
+    if request.method == "PUT":
         add_to_cart_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                                 2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                                 4: "MISSING_BOOK_ID"}
         response = dict()
-        logging.info(f'Request: {request.json!r}')
-        add_to_cart_status = handler.add_to_cart(request.json)
+        print(request.args)
+        add_to_cart_status = handler.add_to_cart(request.args)
         response["add_status"] = add_to_cart_statuses[add_to_cart_status]
         return json.dumps(response)
     elif request.method == "DELETE":
