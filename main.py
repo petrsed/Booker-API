@@ -114,13 +114,12 @@ def add_book():
     return json.dumps(response)
 
 
-@app.route('/issue/', methods=['POST'])
+@app.route('/issue/', methods=['PUT'])
 def issue():
     issued_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                        2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                        4: "MISSING_BOOK_ID"}
     response = dict()
-    logging.info(f'Request: {request.json!r}')
     issue_status, issue_id = handler.issue_book(request.json)
     response["issue_status"] = issued_statuses[issue_status]
     if issue_status != 0:

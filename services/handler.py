@@ -137,11 +137,12 @@ def check_barcode_valid(barcode):
 
 
 def issue_book(request):
-    if "user_id" not in request:
+    user_id = request.get("user_id")
+    book_id = request.get("book_id")
+    if user_id is None:
         return [3, None]  # MISSING_USER_ID
-    elif "book_id" not in request:
+    elif book_id is None:
         return [4, None]  # MISSING_BOOK_ID
-    book_id, user_id = request["book_id"], request["user_id"]
     if not dbwrapper.check_book_presence(book_id):
         return [1, None]  # UNKNOWN_USER_ID
     if not dbwrapper.check_user_presence(user_id):
