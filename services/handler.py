@@ -105,7 +105,7 @@ def get_book(id):
         book_author = dbwrapper.get_book_author_name(book_object.author_id)
         book_image_url = dbwrapper.get_image_url(book_object.image_id)
         return [book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity,
-                book_object.description, book_image_url]
+                book_object.description, book_image_url, book_object.url]
 
 
 def add_book(request):
