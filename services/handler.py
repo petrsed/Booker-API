@@ -88,8 +88,10 @@ def get_books(request):
     for book_object in books_objects:
         book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
         book_author = dbwrapper.get_book_author_name(book_object.author_id)
+        image_url = dbwrapper.get_image_url(book_object.image_id)
         books.append(
-            (book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity))
+            (book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity,
+             book_object.description, book_object.url, image_url))
     if random is None or len(books) <= int(random):
         return books
     else:
