@@ -13,3 +13,5 @@ class Books(SqlAlchemyBase):
     barcode = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
     image_id = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     quantity = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    url = sqlalchemy.Column(sqlalchemy.String, nullable=True)
+    
