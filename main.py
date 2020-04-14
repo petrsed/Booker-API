@@ -202,10 +202,17 @@ def get_issues():
     return json.dumps(response)
 
 
+@app.route('/documentation')
+@app.route('/docs')
 @app.route('/index')
 @app.route('/')
 def redirect_to_documentation():
     return redirect("https://www.notion.so/Booker-API-96e582c8325b40948997babe674acac1")
+
+
+@app.route('/git')
+def redirect_to_git():
+    return redirect("https://github.com/PetrSed/Booker-API")
 
 
 if __name__ == '__main__':
