@@ -250,3 +250,10 @@ def get_image_id(image_url):
     session.add(image_obj)
     session.commit()
     return image_obj.id
+
+
+def get_image_url(image_id):
+    session = create_session()
+    cursor = image.Image  # Shortening the path to issue
+    image_obj = session.query(cursor).filter(cursor.id == image_id).first()
+    return image_obj.url
