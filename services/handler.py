@@ -145,7 +145,8 @@ def add_book(request):
         author_obj = dbwrapper.get_book_author_id(author)
     author_id = author_obj.id
     image_id = dbwrapper.get_image_id(image_url)
-    return dbwrapper.add_book(name, author_id, barcode, quantity, image_id, description, genre_id)
+    url = translititeration(name)
+    return dbwrapper.add_book(name, author_id, barcode, quantity, image_id, description, genre_id, url)
 
 
 def check_barcode_valid(barcode):
@@ -240,3 +241,23 @@ def get_issues(request):
         type = dbwrapper.get_issue_type_name(issue_obj.type)
         issues.append([issue_obj.id, issue_obj.book_id, str(issue_obj.date), type])
     return issues
+
+
+def translititeration(text):
+    translit_dict = {"а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ж": "zh", "з": "z", "и": "i",
+                     "й": "j", "к": "k", "л": "l", "м": "m", "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t",
+                     "у": "u", "ф": "f", "х": "h", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "shch", "ъ": "", "ы": "y",
+                     "ь": "", "э": "e", "ю": "yu", "я": "ya"}
+    translit_text = ''
+    for symbol in text:
+        if symbol.isdigit():
+            translit_text += symbol
+        if symbol.ialpha():
+            symbol = symbol.lower()
+            if symbol in translit_dict:
+                translit_text += translit_dict[symbol]
+            else:
+                translit_text += symbol
+        else:
+            translit_text += "-"
+    return translit_text.replace("--", "-")

@@ -131,7 +131,7 @@ def add_author(name):
     return 0  # SUCCESS
 
 
-def add_book(name, author_id, barcode, quantity, image_id, description, genre_id):
+def add_book(name, author_id, barcode, quantity, image_id, description, genre_id, url):
     session = create_session()
     book = books.Books()
     book.name = name
@@ -141,6 +141,7 @@ def add_book(name, author_id, barcode, quantity, image_id, description, genre_id
     book.image_id = image_id
     book.description = description
     book.genre_id = genre_id
+    book.url = url
     session.add(book)
     session.commit()
     return [0, book.id]  # SUCCESS
