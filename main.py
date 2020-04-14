@@ -94,7 +94,9 @@ def get_book(id):
                         "name": book[2],
                         "author": book[3],
                         "barcode": book[4],
-                        "quantity": book[5]}
+                        "quantity": book[5],
+                        "description": book[6],
+                        "image_url": book[7]}
     return json.dumps(response)
 
 
