@@ -103,7 +103,8 @@ def add_book():
     statuses_of_the_add = {0: "SUCCESS", 1: "INVALID_BARCODE",
                            2: "BARCODE_REPLAY", 3: "MISSING_NAME",
                            4: "MISSING_AUTHOR", 5: "MISSING_BARCODE",
-                           6: "MISSING_QUANTITY", 7: "MISSING_ARGUMENTS"}
+                           6: "MISSING_QUANTITY", 7: "MISSING_ARGUMENTS",
+                           8: "MISSING_GENRE", 9: "MISSING_DESCRIPTION"}
     response = dict()
     logging.info(f'Request: {request.json!r}')
     add_book_status, book_id = handler.add_book(request.json)

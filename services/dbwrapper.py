@@ -1,5 +1,5 @@
 from data.db_session import create_session
-from models import user_types, book_genres, books, authors, issues, users, issue_types
+from models import user_types, book_genres, books, authors, issues, users, issue_types, image
 import datetime
 
 
@@ -131,16 +131,28 @@ def add_author(name):
     return 0  # SUCCESS
 
 
-def add_book(name, author_id, barcode, quantity):
+def add_book(name, author_id, barcode, quantity, image_id, description, genre_id):
     session = create_session()
     book = books.Books()
     book.name = name
     book.author_id = author_id
     book.barcode = barcode
     book.quantity = quantity
+    book.image_id = image_id
+    book.description = description
+    book.genre_id = genre_id
     session.add(book)
     session.commit()
     return [0, book.id]  # SUCCESS
+
+
+def add_genre(name):
+    session = create_session()
+    genre = book_genres.BookGenre()
+    genre.name = name
+    session.add(genre)
+    session.commit()
+    return genre
 
 
 def get_book_id(book_barcode):
@@ -227,3 +239,14 @@ def get_issue_status_is(issue_status):
     cursor = issue_types.IssueTypes  # Shortening the path to issue
     issue = session.query(cursor).filter(cursor.name == issue_status).first()
     return issue
+
+
+def get_image_id(image_url):
+    if image_url is None:
+        return 0  # default image
+    session = create_session()
+    image_obj = image.Image
+    image_obj.url = image_url
+    session.add(image_obj)
+    session.commit()
+    return image_obj.id

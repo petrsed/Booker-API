@@ -112,6 +112,10 @@ def add_book(request):
     book = request["book"]
     if "name" not in book:
         return [3, None]  # MISSING_NAME
+    elif "genre" not in book:
+        return [8, None]  # MISSING_GENRE
+    elif "description" not in book:
+        return [9, None]  # MISSING_DESCRIPTION
     elif "author" not in book:
         return [4, None]  # MISSING_AUTHOR
     elif "barcode" not in book:
@@ -120,16 +124,26 @@ def add_book(request):
         return [6, None]  # MISSING_QUANTITY
     name, author = book["name"], book["author"]
     barcode, quantity = book["barcode"], book["quantity"]
+    description, genre_name = book["description"], book["genre"]
+    if "image_url" in book:
+        image_url = book["image_url"]
+    else:
+        image_url = None
     if not dbwrapper.check_barcode_replay(barcode):
         return [2, None]  # BARCODE_REPLAY
     if not check_barcode_valid(barcode):
         return [1, None]  # INVALID_BARCODE
+    genre_obj = dbwrapper.get_book_genre_id(genre_name)
+    if genre_obj is None:
+        genre_obj = dbwrapper.add_genre(genre_name)
+    genre_id = genre_obj.id
     author_obj = dbwrapper.get_book_author_id(author)
     if author_obj is None:
         dbwrapper.add_author(author)
         author_obj = dbwrapper.get_book_author_id(author)
     author_id = author_obj.id
-    return dbwrapper.add_book(name, author_id, barcode, quantity)
+    image_id = dbwrapper.get_image_id(image_url)
+    return dbwrapper.add_book(name, author_id, barcode, quantity, image_id, description, genre_id)
 
 
 def check_barcode_valid(barcode):
