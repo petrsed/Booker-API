@@ -195,6 +195,10 @@ def add_boot_to_cart():
 def get_user_data(user_id):
     log_request("/user/<user_id>", "GET", request.json)
     response = dict()
+    if not dbwrapper.check_user_presence(user_id):
+        response["error"] = "UNKNOWN_USER_ID"
+        log_response(json.dumps(response))
+        return json.dumps(response)
     user_id, user_login, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_id)
     response["user"] = {"id": user_id,
                         "login": user_login,
@@ -270,14 +274,16 @@ def log_request(address, method, request_data):
     logging.info(f"New Request to {address}. Method: {method}")
     logging.info(f"Request time: {datetime.datetime.now()}")
     logging.info(
-        f"Request data: {str(request_data)[:20]}")
+        f"Request data: {str(request_data)[:80]}")
 
 
 def log_response(response_data):
     logging.info(
-        f"Response data: {str(response_data)[:20]}")
+        f"Response data: {str(response_data)[:80]}")
     logging.info("--------------------")
 
 
 if __name__ == '__main__':
     main()
+
+
