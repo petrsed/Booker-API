@@ -222,14 +222,14 @@ def redirect_to_git():
 
 
 def log_request(address, method, request_data):
-    logging.info("--------------------")
-    logging.info(f"New Request to {address}. Method: {method}")
-    logging.info("Request time:", datetime.datetime.now())
-    logging.info("Request data:", request_data)
+    print("--------------------")
+    print(f"New Request to {address}. Method: {method}")
+    print("Request time:", datetime.datetime.now())
+    print("Request data:", request_data)
 
 
 def log_response(response_data):
-    logging.info("Response data:", response_data)
+    print("Response data:", response_data)
 
 
 if __name__ == '__main__':
