@@ -275,7 +275,7 @@ def log_request(address, method, request_data):
 
 def log_response(response_data):
     logging.info(
-        f"Response data: {str(response_data.decode('utf-8'))[:20]}")
+        f"Response data: {str(response_data)[:20]}")
     logging.info("--------------------")
 
 
