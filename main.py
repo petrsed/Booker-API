@@ -270,12 +270,12 @@ def log_request(address, method, request_data):
     logging.info(f"New Request to {address}. Method: {method}")
     logging.info(f"Request time: {datetime.datetime.now()}")
     logging.info(
-        f"Request data: {str(request_data.decode('utf-8') if not isinstance(request_data, str) else request_data)[:20]}")
+        f"Request data: {str(request_data)[:20]}")
 
 
 def log_response(response_data):
     logging.info(
-        f"Response data: {str(response_data.decode('utf-8') if not isinstance(response_data, str) else response_data)[:20]}")
+        f"Response data: {str(response_data.decode('utf-8'))[:20]}")
     logging.info("--------------------")
 
 
