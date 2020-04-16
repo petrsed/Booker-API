@@ -165,7 +165,10 @@ def issue_book(request):
         return [1, None]  # UNKNOWN_USER_ID
     if not dbwrapper.check_user_presence(user_id):
         return [2, None]  # UNKNOWN_BOOK_ID
+    if not dbwrapper.check_book_available(book_id):
+        return [5, None] # BOOK_NOT_AVAILABLE
     remove_from_cart(user_id, book_id)
+    dbwrapper.subtract_book(book_id)
     return dbwrapper.give_book(user_id, book_id)
 
 

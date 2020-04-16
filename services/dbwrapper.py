@@ -258,3 +258,20 @@ def get_image_url(image_id):
     cursor = image.Image  # Shortening the path to issue
     image_obj = session.query(cursor).filter(cursor.id == image_id).first()
     return image_obj.url
+
+
+def check_book_available(book_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    book_obj = session.query(cursor).filter(cursor.id == book_id).first()
+    return book_obj.quantity > 0
+
+
+def subtract_book(book_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    book_obj = session.query(cursor).filter(cursor.id == book_id).first()
+    now_quantity = book_obj.quantity
+    book_obj.update({'quantity': now_quantity - 1})
+    session.commit()
+    return 0  # SUCCESS

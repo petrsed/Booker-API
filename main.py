@@ -157,7 +157,8 @@ def add_book():
 def issue():
     issued_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                        2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
-                       4: "MISSING_BOOK_ID", 5: "MISSING_ARGUMENTS"}
+                       4: "MISSING_BOOK_ID", 5: "MISSING_ARGUMENTS",
+                       6: "BOOK_NOT_AVAILABLE"}
     response = dict()
     request_json = request.json
     log_request("/issue", "PUT", request_json)
