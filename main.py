@@ -55,14 +55,19 @@ def login():
 
 @app.route('/registration', methods=['POST'])
 def registration():
-    log_request("/registration", "POST", request.json)
     registration_statuses = {0: "SUCCESS", 1: "INVALID_EMAIL",
                              2: "LOGIN_REPLAY", 3: "MISSING_LOGIN",
                              4: "MISSING_NAME", 5: "MISSING_SURNAME",
                              6: "MISSING_PASSWORD_HASH", 7: "MISSING_EMAIL",
                              8: "MISSING_ARGUMENTS", 9: "MISSING_TYPE", 10: "INVALID_TYPE"}
     response = dict()
-    registration_status, user_id = handler.registration(request.json)
+    request_json = request.json
+    log_request("/registration", "POST", request.json)
+    if request_json is None:
+        response["authentication_status"] = registration_statuses[8]
+        log_response(json.dumps(response))
+        return json.dumps(response)
+    registration_status, user_id = handler.registration(request_json)
     response["authentication_status"] = registration_statuses[registration_status]
     if registration_status != 0:
         log_response(json.dumps(response))
@@ -74,7 +79,7 @@ def registration():
 
 @app.route('/book/genres', methods=['GET'])
 def get_genres():
-    log_request("/book/genres", "GET", request.json)
+    log_request("/book/genres", "GET", 'null')
     response = dict()
     genres = handler.get_books_genres()
     response["amount"] = len(genres)
@@ -85,9 +90,10 @@ def get_genres():
 
 @app.route('/books', methods=['GET'])
 def get_books():
-    log_request("/books", "GET", request.json)
     response = dict()
-    books = handler.get_books(request)
+    request_args = request.args
+    log_request("/books", "GET", request_args)
+    books = handler.get_books(request_args)
     if books == 1:
         response["error"] = "UNKNOWN_GENRE"
         log_response(json.dumps(response))
@@ -103,7 +109,7 @@ def get_books():
 
 @app.route('/book/<id>', methods=['GET'])
 def get_book(id):
-    log_request("/book/<id>", "GET", request.json)
+    log_request("/book/<id>", "GET", id)
     response = dict()
     book = handler.get_book(id)
     if book == 1:
@@ -259,11 +265,11 @@ def log_request(address, method, request_data):
     logging.info("--------------------")
     logging.info(f"New Request to {address}. Method: {method}")
     logging.info(f"Request time: {datetime.datetime.now()}")
-    logging.info(f"Request data: {request_data}")
+    logging.info(f"Request data: {str(request_data)[:20]}")
 
 
 def log_response(response_data):
-    logging.info(f"Response data: {response_data}")
+    logging.info(f"Response data: {str(response_data)[:20]}")
     logging.info("--------------------")
 
 

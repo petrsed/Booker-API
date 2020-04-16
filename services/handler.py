@@ -73,8 +73,7 @@ def get_books_genres():
     return genres
 
 
-def get_books(request):
-    args = request.args
+def get_books(args):
     random = args.get("random")
     genre_name = args.get("genre")
     if genre_name is None:
