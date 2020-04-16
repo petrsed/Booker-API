@@ -251,13 +251,17 @@ def get_issues():
 @app.route('/index')
 @app.route('/')
 def redirect_to_documentation():
+    logging.info("--------------------")
     logging.info("-REDIRECT TO DOCS-")
+    logging.info("--------------------")
     return redirect("https://www.notion.so/Booker-API-96e582c8325b40948997babe674acac1")
 
 
 @app.route('/git')
 def redirect_to_git():
+    logging.info("--------------------")
     logging.info("-REDIRECT TO GIT-")
+    logging.info("--------------------")
     return redirect("https://github.com/PetrSed/Booker-API")
 
 
@@ -265,11 +269,13 @@ def log_request(address, method, request_data):
     logging.info("--------------------")
     logging.info(f"New Request to {address}. Method: {method}")
     logging.info(f"Request time: {datetime.datetime.now()}")
-    logging.info(f"Request data: {str(request_data)[:20]}")
+    logging.info(
+        f"Request data: {str(request_data.decode('utf-8') if not isinstance(request_data, str) else request_data)[:20]}")
 
 
 def log_response(response_data):
-    logging.info(f"Response data: {str(response_data)[:20]}")
+    logging.info(
+        f"Response data: {str(response_data.decode('utf-8') if not isinstance(response_data, str) else response_data)[:20]}")
     logging.info("--------------------")
 
 
