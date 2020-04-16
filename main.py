@@ -5,15 +5,20 @@ from services import handler, dbwrapper
 from data import db_session
 import json
 import os
+import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'booker_secret_key'
+logging.basicConfig(filename="booker.log", level=logging.INFO, filemode="w")
+base_name = "db/bookertest.sqlite"
 
 
 def main():
     logging.basicConfig(stream=sys.stdout, level=logging.INFO)
     logging.info("Program start.")
-    db_session.global_init("db/bookertest.sqlite")
+    logging.info("Connect to base - " + base_name)
+    db_session.global_init(base_name)
+    logging.info("Connect successful")
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
     logging.info("Exit program.")
@@ -21,11 +26,11 @@ def main():
 
 @app.route('/login', methods=['GET'])
 def login():
+    log_request("/login", "GET", request.json)
     authentication_statuses = {0: "SUCCESS", 1: "INVALID_PASSWORD",
                                2: "UNKNOWN_LOGIN", 3: "MISSING_LOGIN",
                                4: "MISSING_PASSWORD_HASH", 5: "MISSING_ARGUMENTS"}
     response = dict()
-    logging.info(f'Request: {request.json!r}')
     authentication_status = handler.authenticate(request.json)
     response["authentication_status"] = authentication_statuses[authentication_status]
     if authentication_status != 0:
@@ -39,6 +44,7 @@ def login():
                         "surname": user_surname,
                         "type": user_type,
                         "cart": user_cart}
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
@@ -213,6 +219,17 @@ def redirect_to_documentation():
 @app.route('/git')
 def redirect_to_git():
     return redirect("https://github.com/PetrSed/Booker-API")
+
+
+def log_request(address, method, request_data):
+    logging.info("--------------------")
+    logging.info(f"New Request to {address}. Method: {method}")
+    logging.info("Request time:", datetime.datetime.now())
+    logging.info("Request data:", request_data)
+
+
+def log_response(response_data):
+    logging.info("Response data:", response_data)
 
 
 if __name__ == '__main__':
