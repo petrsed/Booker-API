@@ -9,7 +9,7 @@ import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'booker_secret_key'
-logging.basicConfig(filename="booker.log", level=logging.INFO, filemode="w", stream=sys.stdout)
+logging.basicConfig(level=logging.INFO, filemode="w", stream=sys.stdout)
 base_name = "db/bookertest.sqlite"
 
 
