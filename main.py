@@ -50,51 +50,60 @@ def login():
 
 @app.route('/registration', methods=['POST'])
 def registration():
+    log_request("/registration", "POST", request.json)
     registration_statuses = {0: "SUCCESS", 1: "INVALID_EMAIL",
                              2: "LOGIN_REPLAY", 3: "MISSING_LOGIN",
                              4: "MISSING_NAME", 5: "MISSING_SURNAME",
                              6: "MISSING_PASSWORD_HASH", 7: "MISSING_EMAIL",
                              8: "MISSING_ARGUMENTS", 9: "MISSING_TYPE", 10: "INVALID_TYPE"}
     response = dict()
-    logging.info(f'Request: {request.json!r}')
     registration_status, user_id = handler.registration(request.json)
     response["authentication_status"] = registration_statuses[registration_status]
     if registration_status != 0:
+        log_response(json.dumps(response))
         return json.dumps(response)
     response["user"] = {"id": user_id}
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/book/genres', methods=['GET'])
 def get_genres():
+    log_request("/book/genres", "GET", request.json)
     response = dict()
     genres = handler.get_books_genres()
     response["amount"] = len(genres)
     response["genres"] = [{"id": genre[0], "name": genre[1]} for genre in genres]
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/books', methods=['GET'])
 def get_books():
+    log_request("/books", "GET", request.json)
     response = dict()
     books = handler.get_books(request)
     if books == 1:
         response["error"] = "UNKNOWN_GENRE"
+        log_response(json.dumps(response))
         return json.dumps(response)
     response["amount"] = len(books)
     response["books"] = [
         {"id": book[0], "genre": book[1], "name": book[2], "author": book[3], "barcode": book[4], "quantity": book[5],
          "description": book[6], "url": book[7], "image_url": book[8]}
         for book in books]
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/book/<id>', methods=['GET'])
 def get_book(id):
+    log_request("/book/<id>", "GET", request.json)
     response = dict()
     book = handler.get_book(id)
     if book == 1:
         response["error"] = "UNKNOWN_BOOK_ID"
+        log_response(json.dumps(response))
         return json.dumps(response)
     response["book"] = {"id": book[0],
                         "genre": book[1],
@@ -105,11 +114,13 @@ def get_book(id):
                         "description": book[6],
                         "image_url": book[7],
                         "book_url": book[8]}
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/book', methods=['POST'])
 def add_book():
+    log_request("/book", "POST", request.json)
     statuses_of_the_add = {0: "SUCCESS", 1: "INVALID_BARCODE",
                            2: "BARCODE_REPLAY", 3: "MISSING_NAME",
                            4: "MISSING_AUTHOR", 5: "MISSING_BARCODE",
@@ -120,13 +131,16 @@ def add_book():
     add_book_status, book_id = handler.add_book(request.json)
     response["add_status"] = statuses_of_the_add[add_book_status]
     if add_book_status != 0:
+        log_response(json.dumps(response))
         return json.dumps(response)
     response["book"] = {"id": book_id}
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/issue/', methods=['PUT'])
 def issue():
+    log_request("/issue", "PUT", request.json)
     issued_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                        2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                        4: "MISSING_BOOK_ID"}
@@ -134,22 +148,27 @@ def issue():
     issue_status, issue_id = handler.issue_book(request.json)
     response["issue_status"] = issued_statuses[issue_status]
     if issue_status != 0:
+        log_response(json.dumps(response))
         return json.dumps(response)
     response["issue_id"] = issue_id
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/issue/return/<issue_id>', methods=['POST'])
 def return_book(issue_id):
+    log_request("/issue/return/<issue_id>", "POST", request.json)
     return_statuses = {0: "SUCCESS", 1: "UNKNOWN_ISSUE_ID"}
     response = dict()
     return_status = handler.return_book(issue_id)
     response["return_status"] = return_statuses[return_status]
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/cart', methods=['POST'])
 def add_boot_to_cart():
+    log_request("/cart", "POST", request.json)
     add_to_cart_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                             2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                             4: "MISSING_BOOK_ID"}
@@ -157,11 +176,13 @@ def add_boot_to_cart():
     logging.info(f'Request: {request.json!r}')
     add_to_cart_status = handler.add_to_cart(request.json)
     response["add_status"] = add_to_cart_statuses[add_to_cart_status]
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/user/<user_id>', methods=['GET'])
 def get_user_data(user_id):
+    log_request("/user/<user_id>", "GET", request.json)
     response = dict()
     user_id, user_login, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_id)
     response["user"] = {"id": user_id,
@@ -170,31 +191,37 @@ def get_user_data(user_id):
                         "surname": user_surname,
                         "type": user_type,
                         "cart": user_cart}
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
 @app.route('/cart', methods=["PUT", 'DELETE'])
 def cart():
     if request.method == "PUT":
+        log_request("/cart", "PUT", request.json)
         add_to_cart_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                                 2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                                 4: "MISSING_BOOK_ID"}
         response = dict()
         add_to_cart_status = handler.add_to_cart(request.args)
         response["add_status"] = add_to_cart_statuses[add_to_cart_status]
+        log_response(json.dumps(response))
         return json.dumps(response)
     elif request.method == "DELETE":
+        log_request("/cart", "DELETE", request.json)
         add_to_cart_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                                 2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                                 4: "MISSING_BOOK_ID", 5: "BOOK_IS_NOT_IN_CART"}
         response = dict()
         add_to_cart_status = handler.delete_from_cart(request.args)
         response["delete_status"] = add_to_cart_statuses[add_to_cart_status]
+        log_response(json.dumps(response))
         return json.dumps(response)
 
 
 @app.route('/issues', methods=['GET'])
 def get_issues():
+    log_request("/issues", "GET", request.json)
     error_codes = {1: "UNKNOWN_USER_ID", 2: "MISSING_USER_ID", 3: "UNKNOWN_ISSUE_STATUS"}
     response = dict()
     issues = handler.get_issues(request)
@@ -204,6 +231,7 @@ def get_issues():
         response["amount"] = len(issues)
         response["issues"] = [
             {"id": issue[0], "book_id": issue[1], "date": issue[2], "type": issue[3]} for issue in issues]
+    log_response(json.dumps(response))
     return json.dumps(response)
 
 
@@ -212,11 +240,13 @@ def get_issues():
 @app.route('/index')
 @app.route('/')
 def redirect_to_documentation():
+    logging.info("-REDIRECT TO DOCS-")
     return redirect("https://www.notion.so/Booker-API-96e582c8325b40948997babe674acac1")
 
 
 @app.route('/git')
 def redirect_to_git():
+    logging.info("-REDIRECT TO GIT-")
     return redirect("https://github.com/PetrSed/Booker-API")
 
 
@@ -229,6 +259,7 @@ def log_request(address, method, request_data):
 
 def log_response(response_data):
     logging.info(f"Response data: {response_data}")
+    logging.info("--------------------")
 
 
 if __name__ == '__main__':
