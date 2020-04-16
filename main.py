@@ -160,13 +160,9 @@ def issue():
                        4: "MISSING_BOOK_ID", 5: "MISSING_ARGUMENTS",
                        6: "BOOK_NOT_AVAILABLE"}
     response = dict()
-    request_json = request.json
-    log_request("/issue", "PUT", request_json)
-    if request_json is None:
-        response["issue_status"] = issued_statuses[5]
-        log_response(json.dumps(response))
-        return json.dumps(response)
-    issue_status, issue_id = handler.issue_book(request_json)
+    request_args = request.args
+    log_request("/issue", "PUT", request_args)
+    issue_status, issue_id = handler.issue_book(request_args)
     response["issue_status"] = issued_statuses[issue_status]
     if issue_status != 0:
         log_response(json.dumps(response))
