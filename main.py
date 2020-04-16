@@ -9,12 +9,11 @@ import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'booker_secret_key'
-logging.basicConfig(filename="booker.log", level=logging.INFO, filemode="w")
+logging.basicConfig(filename="booker.log", level=logging.INFO, filemode="w", stream=sys.stdout)
 base_name = "db/bookertest.sqlite"
 
 
 def main():
-    logging.basicConfig(stream=sys.stdout, level=logging.INFO)
     logging.info("Program start.")
     logging.info("Connect to base - " + base_name)
     db_session.global_init(base_name)
@@ -34,6 +33,7 @@ def login():
     authentication_status = handler.authenticate(request.json)
     response["authentication_status"] = authentication_statuses[authentication_status]
     if authentication_status != 0:
+        log_response(json.dumps(response))
         return json.dumps(response)
     user_login = request.json["user"]["login"]
     user_id = dbwrapper.get_user_id(user_login)
@@ -180,7 +180,6 @@ def cart():
                                 2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
                                 4: "MISSING_BOOK_ID"}
         response = dict()
-        print(request.args)
         add_to_cart_status = handler.add_to_cart(request.args)
         response["add_status"] = add_to_cart_statuses[add_to_cart_status]
         return json.dumps(response)
@@ -222,14 +221,14 @@ def redirect_to_git():
 
 
 def log_request(address, method, request_data):
-    print("--------------------")
-    print(f"New Request to {address}. Method: {method}")
-    print("Request time:", datetime.datetime.now())
-    print("Request data:", request_data)
+    logging.info("--------------------")
+    logging.info(f"New Request to {address}. Method: {method}")
+    logging.info("Request time:", datetime.datetime.now())
+    logging.info("Request data:", request_data)
 
 
 def log_response(response_data):
-    print("Response data:", response_data)
+    logging.info("Response data:", response_data)
 
 
 if __name__ == '__main__':
