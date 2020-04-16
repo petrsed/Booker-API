@@ -25,17 +25,25 @@ def main():
 
 @app.route('/login', methods=['GET'])
 def login():
-    log_request("/login", "GET", request.json)
     authentication_statuses = {0: "SUCCESS", 1: "INVALID_PASSWORD",
                                2: "UNKNOWN_LOGIN", 3: "MISSING_LOGIN",
                                4: "MISSING_PASSWORD_HASH", 5: "MISSING_ARGUMENTS"}
     response = dict()
-    authentication_status = handler.authenticate(request.json)
+    try:
+        request_json = request.json
+    except Exception:
+        log_request("/login", "GET", "NULL")
+        response["authentication_status"] = authentication_statuses[5]
+        log_response(json.dumps(response))
+        return json.dumps(response)
+    log_request("/login", "GET", request_json)
+    response = dict()
+    authentication_status = handler.authenticate(request_json)
     response["authentication_status"] = authentication_statuses[authentication_status]
     if authentication_status != 0:
         log_response(json.dumps(response))
         return json.dumps(response)
-    user_login = request.json["user"]["login"]
+    user_login = request_json["user"]["login"]
     user_id = dbwrapper.get_user_id(user_login)
     user_id, user_login, user_name, user_surname, user_type, user_cart = handler.get_user_data(user_id)
     response["user"] = {"id": user_id,
