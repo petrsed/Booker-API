@@ -29,15 +29,12 @@ def login():
                                2: "UNKNOWN_LOGIN", 3: "MISSING_LOGIN",
                                4: "MISSING_PASSWORD_HASH", 5: "MISSING_ARGUMENTS"}
     response = dict()
-    try:
-        request_json = request.json
-    except Exception:
-        log_request("/login", "GET", "NULL")
+    request_json = request.json
+    log_request("/login", "GET", request_json)
+    if request_json is None:
         response["authentication_status"] = authentication_statuses[5]
         log_response(json.dumps(response))
         return json.dumps(response)
-    log_request("/login", "GET", request_json)
-    response = dict()
     authentication_status = handler.authenticate(request_json)
     response["authentication_status"] = authentication_statuses[authentication_status]
     if authentication_status != 0:
