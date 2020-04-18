@@ -105,7 +105,7 @@ def get_books():
         return json.dumps(response)
     response["books"] = [
         {"id": book[0], "genre": book[1], "name": book[2], "author": book[3], "barcode": book[4], "quantity": book[5],
-         "description": book[6], "url": book[7], "image_url": book[8]}
+         "description": book[6], "image_id": book[7], "icon_id": book[8]}
         for book in books]
     log_response(json.dumps(response))
     return json.dumps(response)

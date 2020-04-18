@@ -88,9 +88,10 @@ def get_books(args):
         book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
         book_author = dbwrapper.get_book_author_name(book_object.author_id)
         image_url = dbwrapper.get_image_url(book_object.image_id)
+        icon_url = dbwrapper.get_image_url(book_object.icon_id)
         books.append(
             (book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity,
-             book_object.description, book_object.url, image_url))
+             book_object.description, image_url, icon_url))
     if random is not None and len(books) >= int(random):
         return sample(books, len(books))[:int(random)]
     elif start is not None and amount is not None and len(books) >= int(start) and int(amount):
