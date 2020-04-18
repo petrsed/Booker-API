@@ -92,6 +92,7 @@ def get_genres():
 def get_books():
     response = dict()
     request_args = request.args
+    only_amount = request_args.get("onlyAmount")
     log_request("/books", "GET", request_args)
     books = handler.get_books(request_args)
     if books == 1:
@@ -99,6 +100,9 @@ def get_books():
         log_response(json.dumps(response))
         return json.dumps(response)
     response["amount"] = len(books)
+    if only_amount is not None:
+        log_response(json.dumps(response))
+        return json.dumps(response)
     response["books"] = [
         {"id": book[0], "genre": book[1], "name": book[2], "author": book[3], "barcode": book[4], "quantity": book[5],
          "description": book[6], "url": book[7], "image_url": book[8]}
