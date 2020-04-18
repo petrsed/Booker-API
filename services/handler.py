@@ -74,8 +74,8 @@ def get_books_genres():
 
 
 def get_books(args):
-    random = args.get("random")
-    genre_name = args.get("genre")
+    random, start = args.get("random"), args.get("start")
+    genre_name, amount = args.get("genre"), args.get("amount")
     if genre_name is None:
         genre_id = None
     else:
@@ -91,10 +91,12 @@ def get_books(args):
         books.append(
             (book_object.id, book_genre, book_object.name, book_author, book_object.barcode, book_object.quantity,
              book_object.description, book_object.url, image_url))
-    if random is None or len(books) <= int(random):
-        return books
-    else:
+    if random is not None and len(books) >= int(random):
         return sample(books, len(books))[:int(random)]
+    elif start is not None and amount is not None and len(books) >= int(start) and int(amount):
+        return books[int(start):int(start) + int(amount)]
+    else:
+        return books
 
 
 def get_book(id):
