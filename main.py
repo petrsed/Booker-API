@@ -128,7 +128,7 @@ def get_book(id):
                         "quantity": book[5],
                         "description": book[6],
                         "image_url": book[7],
-                        "book_url": book[8]}
+                        "icon_url": book[8]}
     log_response(json.dumps(response))
     return json.dumps(response)
 
