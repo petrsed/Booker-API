@@ -95,6 +95,8 @@ def get_books(args):
         return sample(books, len(books))[:int(random)]
     elif start is not None and amount is not None and len(books) >= int(start) and int(amount):
         return books[int(start):int(start) + int(amount)]
+    elif amount is not None and start is None:
+        return books[:int(amount)]
     else:
         return books
 
