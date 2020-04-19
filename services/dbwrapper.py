@@ -273,9 +273,7 @@ def check_book_available(book_id):
 def subtract_book(book_id):
     session = create_session()
     cursor = books.Books  # Shortening the path to book
-    book_obj = session.query(cursor).filter(cursor.id == book_id).first()
-    now_quantity = int(book_obj.quantity)
-    book_obj.update({'quantity': str(now_quantity - 1)})
+    book_obj = session.query(cursor).filter(cursor.id == book_id).update({'quantity': '0'})
     session.commit()
     return 0  # SUCCESS
 
@@ -283,9 +281,7 @@ def subtract_book(book_id):
 def increase_book(book_id):
     session = create_session()
     cursor = books.Books  # Shortening the path to book
-    book_obj = session.query(cursor).filter(cursor.id == book_id).first()
-    now_quantity = int(book_obj.quantity)
-    book_obj.update({'quantity': str(now_quantity + 1)})
+    book_obj = session.query(cursor).filter(cursor.id == book_id).update({'quantity': '1'})
     session.commit()
     return 0  # SUCCESS
 
