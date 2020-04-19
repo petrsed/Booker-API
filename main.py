@@ -89,7 +89,7 @@ def get_genres():
     else:
         breakdown_authors = handler.breakdown_by_letters(genres)
         print(breakdown_authors)
-        response["genres"] = [{letter: breakdown_authors[letter]} for letter in breakdown_authors]
+        response["genres"] = {letter: breakdown_authors[letter] for letter in breakdown_authors}
     log_response(json.dumps(response))
     return json.dumps(response)
 
