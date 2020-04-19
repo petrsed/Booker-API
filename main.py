@@ -105,7 +105,7 @@ def get_authors():
         response["authors"] = [{"id": author[0], "name": author[1]} for author in authors]
     else:
         breakdown_authors = handler.breakdown_by_letters(authors)
-        response["authors"] = [{letter: breakdown_authors[letter]} for letter in breakdown_authors]
+        response["authors"] = {letter: breakdown_authors[letter] for letter in breakdown_authors}
     log_response(json.dumps(response))
     return json.dumps(response)
 
