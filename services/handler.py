@@ -104,6 +104,8 @@ def get_books(args):
         return books[int(start):int(start) + int(amount)]
     elif amount is not None and start is None:
         return books[:int(amount)]
+    elif amount is None and start is not None:
+        return books[int(start):]
     else:
         return books
 
