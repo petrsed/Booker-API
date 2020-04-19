@@ -69,11 +69,14 @@ def get_books_genres():
     return genres
 
 
-def get_books(genre_id):
+def get_books(genre_id, author):
     session = create_session()
     cursor = books.Books  # Shortening the path to book
-    if genre_id is None:
+    if genre_id is None and author is None:
         return session.query(cursor).all()
+    elif genre_id is None and author is not None:
+        author_id = get_book_author_id(author)
+        return session.query(cursor).filter(cursor.author_id == author_id).all()
     else:
         return session.query(cursor).filter(cursor.genre_id == genre_id).all()
 
@@ -273,5 +276,15 @@ def subtract_book(book_id):
     book_obj = session.query(cursor).filter(cursor.id == book_id).first()
     now_quantity = int(book_obj.quantity)
     book_obj.update({'quantity': str(now_quantity - 1)})
+    session.commit()
+    return 0  # SUCCESS
+
+
+def increase_book(book_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    book_obj = session.query(cursor).filter(cursor.id == book_id).first()
+    now_quantity = int(book_obj.quantity)
+    book_obj.update({'quantity': str(now_quantity + 1)})
     session.commit()
     return 0  # SUCCESS
