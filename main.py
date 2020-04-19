@@ -88,6 +88,24 @@ def get_genres():
     return json.dumps(response)
 
 
+@app.route('/book/authors', methods=['GET'])
+def get_authors():
+    log_request("/book/authors", "GET", 'null')
+    letters = request.args.get("letters")
+    response = dict()
+    authors = handler.get_books_authors()
+    response["amount"] = len(authors)
+    if letters is None:
+        response["authors"] = [{"id": author[0], "name": author[1]} for author in authors]
+    else:
+        breakdown_authors = handler.breakdown_by_letters(authors)
+        print(breakdown_authors)
+        for letter in breakdown_authors:
+            response["authors"] = [{letter: breakdown_authors[letter]} for letter in breakdown_authors]
+    log_response(json.dumps(response))
+    return json.dumps(response)
+
+
 @app.route('/books', methods=['GET'])
 def get_books():
     response = dict()

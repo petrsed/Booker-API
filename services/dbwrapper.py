@@ -288,3 +288,9 @@ def increase_book(book_id):
     book_obj.update({'quantity': str(now_quantity + 1)})
     session.commit()
     return 0  # SUCCESS
+
+
+def get_books_authors():
+    session = create_session()
+    authors_objs = session.query(authors.Authors).all()
+    return authors_objs

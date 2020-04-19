@@ -86,7 +86,7 @@ def get_books(args):
     if author is not None:
         author_obj = dbwrapper.get_book_author_id(author)
         if author_obj == None:
-            return 2 # UNKNOWN_AUTHOR
+            return 2  # UNKNOWN_AUTHOR
     else:
         author_obj = None
     books_objects = dbwrapper.get_books(genre_id, author_obj)
@@ -179,7 +179,7 @@ def issue_book(request):
     if not dbwrapper.check_user_presence(user_id):
         return [2, None]  # UNKNOWN_BOOK_ID
     if not dbwrapper.check_book_available(book_id):
-        return [5, None] # BOOK_NOT_AVAILABLE
+        return [5, None]  # BOOK_NOT_AVAILABLE
     remove_from_cart(user_id, book_id)
     dbwrapper.subtract_book(book_id)
     return dbwrapper.give_book(user_id, book_id)
@@ -260,21 +260,24 @@ def get_issues(request):
     return issues
 
 
-def translititeration(text):
-    translit_dict = {"а": "a", "б": "b", "в": "v", "г": "g", "д": "d", "е": "e", "ж": "zh", "з": "z", "и": "i",
-                     "й": "j", "к": "k", "л": "l", "м": "m", "н": "n", "о": "o", "п": "p", "р": "r", "с": "s", "т": "t",
-                     "у": "u", "ф": "f", "х": "h", "ц": "ts", "ч": "ch", "ш": "sh", "щ": "shch", "ъ": "", "ы": "y",
-                     "ь": "", "э": "e", "ю": "yu", "я": "ya"}
-    translit_text = ''
-    for symbol in text:
-        if symbol.isdigit():
-            translit_text += symbol
-        if symbol.ialpha():
-            symbol = symbol.lower()
-            if symbol in translit_dict:
-                translit_text += translit_dict[symbol]
-            else:
-                translit_text += symbol
+def get_books_authors():
+    authors = list()
+    author_objects = dbwrapper.get_books_authors()
+    for author_object in author_objects:
+        authors.append([author_object.id, author_object.name])
+    return authors
+
+
+def breakdown_by_letters(authors):
+    letters = {}
+    sorted_authors = sorted(authors, key=lambda x: x[1])
+    for author in sorted_authors:
+        letter = author[1][0]
+        if letter in letters:
+            authors = letters[letter]
+            authors.append({"id": author[0], "name": author[1]})
+            letters[letter] = authors
         else:
-            translit_text += "-"
-    return translit_text.replace("--", "-")
+            letters[letter] = [{"id": author[0], "name": author[1]}]
+    print(letters)
+    return letters
