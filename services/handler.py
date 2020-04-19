@@ -146,6 +146,10 @@ def add_book(request):
         image_url = book["image_url"]
     else:
         image_url = None
+    if "iсon_url" in book:
+        icon_url = book["image_url"]
+    else:
+        icon_url = None
     if not dbwrapper.check_barcode_replay(barcode):
         return [2, None]  # BARCODE_REPLAY
     if not check_barcode_valid(barcode):
@@ -160,7 +164,8 @@ def add_book(request):
         author_obj = dbwrapper.get_book_author_id(author)
     author_id = author_obj.id
     image_id = dbwrapper.get_image_id(image_url)
-    return dbwrapper.add_book(name, author_id, barcode, quantity, image_id, description, genre_id)
+    icon_id = dbwrapper.get_image_id(icon_url)
+    return dbwrapper.add_book(name, author_id, barcode, quantity, image_id, description, genre_id, icon_id)
 
 
 def check_barcode_valid(barcode):
