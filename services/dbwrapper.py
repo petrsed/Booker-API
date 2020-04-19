@@ -318,3 +318,16 @@ def get_books_by_author(author_id):
     cursor = books.Books  # Shortening the path to book
     books_obj = session.query(cursor).filter(cursor.author_id == author_id).all()
     return books_obj
+
+
+def check_genre_presence(genre_id):
+    session = create_session()
+    cursor = book_genres.BookGenre  # Shortening the path to book genre
+    genre = session.query(cursor).filter(cursor.id == genre_id).first()
+    return genre is not None
+
+def get_books_by_genre(genre_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    books_obj = session.query(cursor).filter(cursor.genre_id == genre_id).all()
+    return books_obj

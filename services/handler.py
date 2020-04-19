@@ -290,3 +290,10 @@ def get_author_data(author_id):
     ids = ";".join([str(book.id) for book in books])
     name = dbwrapper.get_book_author_name(author_id)
     return (name, ids)
+
+
+def get_genre_data(genre_id):
+    books = dbwrapper.get_books_by_genre(genre_id)
+    ids = ";".join([str(book.id) for book in books])
+    name = dbwrapper.get_book_genre_name(genre_id)
+    return (name, ids)

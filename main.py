@@ -263,6 +263,22 @@ def get_author_data(author_id):
     return json.dumps(response)
 
 
+@app.route('/genre/<genre_id>', methods=['GET'])
+def get_genre_data(genre_id):
+    log_request("/author/<author_id>", "GET", genre_id)
+    response = dict()
+    if not dbwrapper.check_genre_presence(genre_id):
+        response["error"] = "UNKNOWN_GENRE_ID"
+        log_response(json.dumps(response))
+        return json.dumps(response)
+    author_name, books_id = handler.get_genre_data(genre_id)
+    response["genre"] = {"id": genre_id,
+                         "name": author_name,
+                         "books": books_id}
+    log_response(json.dumps(response))
+    return json.dumps(response)
+
+
 @app.route('/cart', methods=["PUT", 'DELETE'])
 def cart():
     if request.method == "PUT":
