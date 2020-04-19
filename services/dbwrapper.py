@@ -180,6 +180,13 @@ def check_user_presence(user_id):
     return user is not None
 
 
+def check_author_presence(author_id):
+    session = create_session()
+    cursor = authors.Authors  # Shortening the path to user
+    author = session.query(cursor).filter(cursor.id == author_id).first()
+    return author is not None
+
+
 def give_book(user_id, book_id):
     session = create_session()
     issue = issues.Issues()
@@ -291,9 +298,23 @@ def get_books_authors():
     authors_objs = session.query(authors.Authors).all()
     return authors_objs
 
+
 def get_book_id_by_issue(issue_id):
     session = create_session()
     cursor = issues.Issues  # Shortening the path to issue
     book_obj = session.query(cursor).filter(cursor.id == issue_id).first()
-    session.commit()
     return book_obj.book_id  # SUCCESS
+
+
+def get_book_id_by_issue(issue_id):
+    session = create_session()
+    cursor = issues.Issues  # Shortening the path to issue
+    book_obj = session.query(cursor).filter(cursor.id == issue_id).first()
+    return book_obj.book_id  # SUCCESS
+
+
+def get_books_by_author(author_id):
+    session = create_session()
+    cursor = books.Books  # Shortening the path to book
+    books_obj = session.query(cursor).filter(cursor.author_id == author_id).all()
+    return books_obj

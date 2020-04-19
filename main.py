@@ -247,6 +247,22 @@ def get_user_data(user_id):
     return json.dumps(response)
 
 
+@app.route('/author/<author_id>', methods=['GET'])
+def get_author_data(author_id):
+    log_request("/author/<author_id>", "GET", author_id)
+    response = dict()
+    if not dbwrapper.check_author_presence(author_id):
+        response["error"] = "UNKNOWN_AUTHOR_ID"
+        log_response(json.dumps(response))
+        return json.dumps(response)
+    author_name, books_id = handler.get_author_data(author_id)
+    response["author"] = {"id": author_id,
+                          "name": author_name,
+                          "books": books_id}
+    log_response(json.dumps(response))
+    return json.dumps(response)
+
+
 @app.route('/cart', methods=["PUT", 'DELETE'])
 def cart():
     if request.method == "PUT":

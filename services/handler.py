@@ -283,3 +283,10 @@ def breakdown_by_letters(authors):
             letters[letter] = [{"id": author[0], "name": author[1]}]
     print(letters)
     return letters
+
+
+def get_author_data(author_id):
+    books = dbwrapper.get_books_by_author(author_id)
+    ids = ";".join([str(book.id) for book in books])
+    name = dbwrapper.get_book_author_name(author_id)
+    return (name, ids)
