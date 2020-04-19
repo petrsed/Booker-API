@@ -160,8 +160,7 @@ def add_book(request):
         author_obj = dbwrapper.get_book_author_id(author)
     author_id = author_obj.id
     image_id = dbwrapper.get_image_id(image_url)
-    url = translititeration(name)
-    return dbwrapper.add_book(name, author_id, barcode, quantity, image_id, description, genre_id, url)
+    return dbwrapper.add_book(name, author_id, barcode, quantity, image_id, description, genre_id)
 
 
 def check_barcode_valid(barcode):
