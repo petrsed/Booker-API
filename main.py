@@ -91,12 +91,13 @@ def get_genres():
 @app.route('/books', methods=['GET'])
 def get_books():
     response = dict()
+    errors = {1: "UNKNOWN_GENRE", 2: "UNKNOWN_AUTHOR"}
     request_args = request.args
     only_amount = request_args.get("onlyAmount")
     log_request("/books", "GET", request_args)
     books = handler.get_books(request_args)
-    if books == 1:
-        response["error"] = "UNKNOWN_GENRE"
+    if str(books).isdigit():
+        response["error"] = errors[books]
         log_response(json.dumps(response))
         return json.dumps(response)
     response["amount"] = len(books)

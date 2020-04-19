@@ -69,14 +69,15 @@ def get_books_genres():
     return genres
 
 
-def get_books(genre_id, author):
+def get_books(genre_id, author_obj):
     session = create_session()
     cursor = books.Books  # Shortening the path to book
-    if genre_id is None and author is None:
+    if genre_id is None and author_obj is None:
         return session.query(cursor).all()
-    elif genre_id is None and author is not None:
-        author_id = get_book_author_id(author)
-        return session.query(cursor).filter(cursor.author_id == author_id).all()
+    elif genre_id is None and author_obj is not None:
+        return session.query(cursor).filter(cursor.author_id == author_obj.id).all()
+    elif genre_id is not None and author_obj is not None:
+        return session.query(cursor).filter(cursor.author_id == author_obj.id, cursor.genre_id == genre_id).all()
     else:
         return session.query(cursor).filter(cursor.genre_id == genre_id).all()
 
