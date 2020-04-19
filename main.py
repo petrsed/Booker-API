@@ -80,10 +80,16 @@ def registration():
 @app.route('/book/genres', methods=['GET'])
 def get_genres():
     log_request("/book/genres", "GET", 'null')
+    letters = request.args.get("letters")
     response = dict()
     genres = handler.get_books_genres()
     response["amount"] = len(genres)
-    response["genres"] = [{"id": genre[0], "name": genre[1]} for genre in genres]
+    if letters is None:
+        response["authors"] = [{"id": author[0], "name": author[1]} for author in genres]
+    else:
+        breakdown_authors = handler.breakdown_by_letters(genres)
+        print(breakdown_authors)
+        response["genres"] = [{letter: breakdown_authors[letter]} for letter in breakdown_authors]
     log_response(json.dumps(response))
     return json.dumps(response)
 
@@ -99,9 +105,7 @@ def get_authors():
         response["authors"] = [{"id": author[0], "name": author[1]} for author in authors]
     else:
         breakdown_authors = handler.breakdown_by_letters(authors)
-        print(breakdown_authors)
-        for letter in breakdown_authors:
-            response["authors"] = [{letter: breakdown_authors[letter]} for letter in breakdown_authors]
+        response["authors"] = [{letter: breakdown_authors[letter]} for letter in breakdown_authors]
     log_response(json.dumps(response))
     return json.dumps(response)
 
