@@ -276,10 +276,10 @@ def cart():
 @app.route('/issues', methods=['GET'])
 def get_issues():
     response = dict()
-    request_json = request.json
-    log_request("/issues", "GET", request_json)
+    request_args = request.args
+    log_request("/issues", "GET", request_args)
     error_codes = {1: "UNKNOWN_USER_ID", 2: "MISSING_USER_ID", 3: "UNKNOWN_ISSUE_STATUS", 4: "MISSING_ARGUMENTS"}
-    if request_json is None:
+    if request_args is None:
         response["error"] = error_codes[4]
         log_response(json.dumps(response))
         return json.dumps(response)

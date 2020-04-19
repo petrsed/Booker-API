@@ -179,7 +179,7 @@ def issue_book(request):
     if not dbwrapper.check_user_presence(user_id):
         return [2, None]  # UNKNOWN_BOOK_ID
     if not dbwrapper.check_book_available(book_id):
-        return [5, None]  # BOOK_NOT_AVAILABLE
+        return [6, None]  # BOOK_NOT_AVAILABLE
     remove_from_cart(user_id, book_id)
     dbwrapper.subtract_book(book_id)
     return dbwrapper.give_book(user_id, book_id)
@@ -188,6 +188,8 @@ def issue_book(request):
 def return_book(issue_id):
     if not dbwrapper.check_issue_presence(issue_id):
         return 1  # UNKNOWN_ISSUE_ID
+    book_id = dbwrapper.get_book_id_by_issue(issue_id)
+    dbwrapper.increase_book(book_id)
     return dbwrapper.return_book(issue_id)
 
 

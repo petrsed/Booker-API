@@ -290,3 +290,10 @@ def get_books_authors():
     session = create_session()
     authors_objs = session.query(authors.Authors).all()
     return authors_objs
+
+def get_book_id_by_issue(issue_id):
+    session = create_session()
+    cursor = issues.Issues  # Shortening the path to issue
+    book_obj = session.query(cursor).filter(cursor.id == issue_id).first()
+    session.commit()
+    return book_obj.book_id  # SUCCESS
