@@ -10,7 +10,7 @@ class Books(SqlAlchemyBase):
     description = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     name = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     author_id = sqlalchemy.Column(sqlalchemy.String, nullable=True)
-    barcode = sqlalchemy.Column(sqlalchemy.String, unique=True, nullable=True)
+    barcode = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     icon_id = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     quantity = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     image_id = sqlalchemy.Column(sqlalchemy.String, nullable=True)
