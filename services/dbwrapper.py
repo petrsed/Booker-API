@@ -88,8 +88,7 @@ def get_book_genre_id(genre_name):
     genre = session.query(cursor).filter(cursor.name == genre_name).first()
     if genre is None:
         return 'UNKNOWN_GENRE'
-    return genre.id
-
+    return genre
 
 def get_book_genre_name(genre_id):
     session = create_session()
@@ -257,11 +256,11 @@ def get_image_id(image_url):
     if image_url is None:
         return 0  # default image
     session = create_session()
-    image_obj = image.Image
-    image_obj.url = image_url
-    session.add(image_obj)
+    new_image = image.Image()
+    new_image.url = image_url
+    session.add(new_image)
     session.commit()
-    return image_obj.id
+    return new_image.id  # SUCCESS
 
 
 def get_image_url(image_id):

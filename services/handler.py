@@ -79,7 +79,8 @@ def get_books(args):
     if genre_name is None:
         genre_id = None
     else:
-        genre_id = dbwrapper.get_book_genre_id(genre_name)
+        genre_obj = dbwrapper.get_book_genre_id(genre_name)
+        genre_id = genre_obj.id
         if genre_id == 'UNKNOWN_GENRE':
             return 1  # UNKNOWN_GENRE
     books = list()
@@ -147,7 +148,7 @@ def add_book(request):
     else:
         image_url = None
     if "iсon_url" in book:
-        icon_url = book["image_url"]
+        icon_url = book["iсon_url"]
     else:
         icon_url = None
     if not dbwrapper.check_barcode_replay(barcode):
