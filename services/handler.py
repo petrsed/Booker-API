@@ -93,7 +93,7 @@ def get_books(args):
             return 2  # UNKNOWN_AUTHOR
     else:
         author_obj = None
-    books_objects = dbwrapper.get_books(genre_id, author_obj, search)
+    books_objects = dbwrapper.get_books(genre_id, author_obj, search, start, amount)
     for book_object in books_objects:
         book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
         book_author = dbwrapper.get_book_author_name(book_object.author_id)

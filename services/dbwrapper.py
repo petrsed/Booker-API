@@ -70,7 +70,7 @@ def get_books_genres():
     return genres
 
 
-def get_books(genre_id, author_obj, search):
+def get_books(genre_id, author_obj, search, start, amount):
     session = create_session()
     cursor = books.Books  # Shortening the path to book
     if search is not None:
@@ -78,7 +78,12 @@ def get_books(genre_id, author_obj, search):
             or_(cursor.name.like(f"%{search}%"), cursor.name.like(f"%{search.lower()}%"),
                 cursor.name.like(f"%{search.upper()}%"),
                 cursor.name.like(f"%{search.title()}%"))).all()
-    if genre_id is None and author_obj is None:
+    if genre_id is None and author_obj is None and amount is not None:
+        if start is None:
+            start = 0
+        print(1)
+        return session.query(cursor).limit(int(start) + int(amount)).all()
+    elif genre_id is None and author_obj is None and amount is None:
         return session.query(cursor).all()
     elif genre_id is None and author_obj is not None:
         return session.query(cursor).filter(cursor.author_id == author_obj.id).all()
