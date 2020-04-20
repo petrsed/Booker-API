@@ -81,7 +81,6 @@ def get_books(genre_id, author_obj, search, start, amount):
     if genre_id is None and author_obj is None and amount is not None:
         if start is None:
             start = 0
-        print(1)
         return session.query(cursor).limit(int(start) + int(amount)).all()
     elif genre_id is None and author_obj is None and amount is None:
         return session.query(cursor).all()
