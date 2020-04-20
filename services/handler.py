@@ -280,7 +280,10 @@ def breakdown_by_letters(authors):
     letters = {}
     sorted_authors = sorted(authors, key=lambda x: x[1])
     for author in sorted_authors:
-        letter = author[1][0]
+        try:
+            letter = author[1][0]
+        except IndexError:
+            letter = author[1]
         if letter in letters:
             authors = letters[letter]
             authors.append({"id": author[0], "name": author[1]})
