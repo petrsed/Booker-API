@@ -80,9 +80,10 @@ def registration():
 @app.route('/book/genres', methods=['GET'])
 def get_genres():
     log_request("/book/genres", "GET", 'null')
-    letters = request.args.get("letters")
+    request_args = request.args
+    letters = request_args.get("letters")
     response = dict()
-    genres = handler.get_books_genres()
+    genres = handler.get_books_genres(request_args)
     response["amount"] = len(genres)
     if letters is None:
         response["authors"] = [{"id": author[0], "name": author[1]} for author in genres]

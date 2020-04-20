@@ -65,11 +65,14 @@ def check_email_valid(address):
     return pattern.match(address)
 
 
-def get_books_genres():
+def get_books_genres(request_args):
+    random = request_args.get("random")
     genres = list()
     genre_objects = dbwrapper.get_books_genres()
     for genre_object in genre_objects:
         genres.append([genre_object.id, genre_object.name])
+    if random is not None and len(genres) >= int(random):
+        return sample(genres, len(genres))[:int(random)]
     return genres
 
 
