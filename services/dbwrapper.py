@@ -1,5 +1,6 @@
 from data.db_session import create_session
 from models import user_types, book_genres, books, authors, issues, users, issue_types, image
+from sqlalchemy import or_
 import datetime
 
 
@@ -69,9 +70,14 @@ def get_books_genres():
     return genres
 
 
-def get_books(genre_id, author_obj):
+def get_books(genre_id, author_obj, search):
     session = create_session()
     cursor = books.Books  # Shortening the path to book
+    if search is not None:
+        return session.query(cursor).filter(
+            or_(cursor.name.like(f"%{search}%"), cursor.name.like(f"%{search.lower()}%"),
+                cursor.name.like(f"%{search.upper()}%"),
+                cursor.name.like(f"%{search.title()}%"))).all()
     if genre_id is None and author_obj is None:
         return session.query(cursor).all()
     elif genre_id is None and author_obj is not None:
@@ -89,6 +95,7 @@ def get_book_genre_id(genre_name):
     if genre is None:
         return 'UNKNOWN_GENRE'
     return genre
+
 
 def get_book_genre_name(genre_id):
     session = create_session()
@@ -325,6 +332,7 @@ def check_genre_presence(genre_id):
     cursor = book_genres.BookGenre  # Shortening the path to book genre
     genre = session.query(cursor).filter(cursor.id == genre_id).first()
     return genre is not None
+
 
 def get_books_by_genre(genre_id):
     session = create_session()

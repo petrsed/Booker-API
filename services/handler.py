@@ -75,7 +75,7 @@ def get_books_genres():
 
 def get_books(args):
     random, start, author = args.get("random"), args.get("start"), args.get("author")
-    genre_name, amount = args.get("genre"), args.get("amount")
+    genre_name, amount, search = args.get("genre"), args.get("amount"), args.get("search")
     if genre_name is None:
         genre_id = None
     else:
@@ -90,7 +90,7 @@ def get_books(args):
             return 2  # UNKNOWN_AUTHOR
     else:
         author_obj = None
-    books_objects = dbwrapper.get_books(genre_id, author_obj)
+    books_objects = dbwrapper.get_books(genre_id, author_obj, search)
     for book_object in books_objects:
         book_genre = dbwrapper.get_book_genre_name(book_object.genre_id)
         book_author = dbwrapper.get_book_author_name(book_object.author_id)
