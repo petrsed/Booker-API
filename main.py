@@ -86,7 +86,7 @@ def get_genres():
     genres = handler.get_books_genres(request_args)
     response["amount"] = len(genres)
     if letters is None:
-        response["authors"] = [{"id": author[0], "name": author[1]} for author in genres]
+        response["genres"] = [{"id": author[0], "name": author[1]} for author in genres]
     else:
         breakdown_authors = handler.breakdown_by_letters(genres)
         print(breakdown_authors)
