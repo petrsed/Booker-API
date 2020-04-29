@@ -351,12 +351,12 @@ def log_request(address, method, request_data):
     logging.info(f"New Request to {address}. Method: {method}")
     logging.info(f"Request time: {datetime.datetime.now()}")
     logging.info(
-        f"Request data: {str(request_data)[:80]}")
+        f"Request data: {str(request_data)}")
 
 
 def log_response(response_data):
     logging.info(
-        f"Response data: {str(response_data)}")
+        f"Response data: {str(response_data)[:80]}")
     logging.info(f"Response time: {datetime.datetime.now()}")
     logging.info("--------------------")
 
