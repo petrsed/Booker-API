@@ -287,7 +287,7 @@ def cart():
         log_request("/cart", "PUT", request_args)
         add_to_cart_statuses = {0: "SUCCESS", 1: "UNKNOWN_USER_ID",
                                 2: "UNKNOWN_BOOK_ID", 3: "MISSING_USER_ID",
-                                4: "MISSING_BOOK_ID"}
+                                4: "MISSING_BOOK_ID", 5: "BOOK_NOT_AVAILABLE"}
         response = dict()
         add_to_cart_status = handler.add_to_cart(request_args)
         response["add_status"] = add_to_cart_statuses[add_to_cart_status]

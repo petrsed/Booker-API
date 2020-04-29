@@ -213,6 +213,8 @@ def add_to_cart(request):
         return 2  # UNKNOWN_BOOK_ID
     if not dbwrapper.check_user_presence(user_id):
         return 1  # UNKNOWN_USER_ID
+    if not dbwrapper.check_book_available(book_id):
+        return 5  # BOOK_NOT_AVAILABLE
     user_cart = dbwrapper.get_user_cart(user_id)
     if user_cart is not None:
         books = user_cart.split(";")
