@@ -1,5 +1,6 @@
 from data.db_session import create_session
 from models import user_types, book_genres, books, authors, issues, users, issue_types, image
+from sqlalchemy import sql
 from sqlalchemy import or_
 import datetime
 
@@ -234,7 +235,10 @@ def get_user_cart(user_id):
 def set_user_cart(user_id, user_cart):
     session = create_session()
     cursor = users.User  # Shortening the path to user
-    user = session.query(cursor).filter(cursor.id == user_id).update({'cart': user_cart})
+    if user_cart == ";" or user_cart == "":
+        user = session.query(cursor).filter(cursor.id == user_id).update({'cart': sql.null()})
+    else:
+        user = session.query(cursor).filter(cursor.id == user_id).update({'cart': user_cart})
     session.commit()
     return 0  # SUCCESS
 
