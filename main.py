@@ -356,7 +356,7 @@ def log_request(address, method, request_data):
 
 def log_response(response_data):
     logging.info(
-        f"Response data: {str(response_data)[:80]}")
+        f"Response data: {str(response_data)}")
     logging.info(f"Response time: {datetime.datetime.now()}")
     logging.info("--------------------")
 
