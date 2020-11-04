@@ -13,7 +13,7 @@ CREATE TABLE `books` (
 CREATE TABLE `book_types` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `name` varchar(64) NOT NULL
-) DEFAULT CHARSET=utf8;
+);
 CREATE TABLE `issues` (
   `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
   `bookId` int(11) NOT NULL,
