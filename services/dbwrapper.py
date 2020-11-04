@@ -1,8 +1,15 @@
-from data.db_session import create_session
-from models import user_types, book_genres, books, authors, issues, users, issue_types, image
-from sqlalchemy import sql
-from sqlalchemy import or_
-import datetime
+from config import MySQL
+import logging
+import pymysql
+
+
+def check_connection():
+    logging.info("Connect to base - " + MySQL.MYSQL_DB_ADDRESS)
+    db = pymysql.connect(MySQL.MYSQL_DB_ADDRESS, MySQL.MYSQL_DB_USER, MySQL.MYSQL_DB_PASSWORD, MySQL.MYSQL_DB_NAME)
+    cursor = db.cursor()
+    cursor.execute("SELECT VERSION()")
+    logging.info("Connect successful")
+
 
 
 def get_password_hash(login):
