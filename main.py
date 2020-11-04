@@ -2,7 +2,6 @@ from flask import Flask, request, redirect
 import logging
 import sys
 from services import handler, dbwrapper
-from data import db_session
 import json
 import os
 import datetime
@@ -10,14 +9,11 @@ import datetime
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'booker_secret_key'
 logging.basicConfig(level=logging.INFO, filemode="w", stream=sys.stdout)
-base_name = "db/bookertest.sqlite"
 
 
 def main():
     logging.info("Program start.")
-    logging.info("Connect to base - " + base_name)
-    db_session.global_init(base_name)
-    logging.info("Connect successful")
+    dbwrapper.check_connection()
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
     logging.info("Exit program.")
