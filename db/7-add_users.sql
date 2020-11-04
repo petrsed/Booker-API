@@ -1,0 +1,1 @@
+INSERT INTO users (name, surname, patronymic, studentCardId, vkId) VALUES ('Ivan', 'Ivanov', 'Ivanovich', '217K', '1');

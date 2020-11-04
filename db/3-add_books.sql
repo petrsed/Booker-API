@@ -1,0 +1,2 @@
+INSERT INTO books (name, authorId, typeId, barcode) VALUES ('Grokking Algorithms', 1, 1, "9785446109234");
+INSERT INTO books (name, authorId, typeId, barcode) VALUES ('Yandex.Book', 2, 2, "9785000570920");
